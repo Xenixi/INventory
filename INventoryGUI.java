@@ -192,12 +192,12 @@ public class INventoryGUI extends JFrame {
 				delButton.setText("-");
 				colorButton.setText("c");
 
-				newButton.setFont(Fonts.getFont("CreteRound-Italic", 17f));
-				delButton.setFont(Fonts.getFont("CreteRound-Italic", 17f));
-				colorButton.setFont(Fonts.getFont("CreteRound-Italic", 17f));
+				newButton.setFont(Fonts.getFont("CreteRound-Italic", 20f));
+				delButton.setFont(Fonts.getFont("CreteRound-Italic", 26f));
+				colorButton.setFont(Fonts.getFont("CreteRound-Italic", 20f));
 
 				newButton.setForeground(new Colors().getColor("InGreen"));
-				delButton.setForeground(new Colors().getColor("InGreen"));
+				delButton.setForeground(new Colors().getColor("RED"));
 				colorButton.setForeground(new Colors().getColor("InGreen"));
 
 				JTextField searchProjectsField = new JTextField();
@@ -292,10 +292,18 @@ public class INventoryGUI extends JFrame {
 				projectsContainerPanel.setLayout(new BorderLayout());
 				projectsContainerPanel.add(Projects.getProjectPanel(), BorderLayout.CENTER);
 				
-				for(int i = 0; i<500; i++) {
+				try {
+					Projects.init(Projects.LOCAL);
+				} catch (Exception e1) {
+					e1.printStackTrace();
+				}
+				
+				for(int i = 0; i<20; i++) {
 					
 					Projects.createProject("TestName" + i, true, "Just some stuffs.");
 				}
+				
+			
 				
 
 			}

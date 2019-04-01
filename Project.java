@@ -13,12 +13,13 @@ public class Project implements Serializable {
 
 	String name, desc;
 	boolean local;
-	ProjectListElement ple = new ProjectListElement(this);
+	ProjectListElement ple;
 	
 	public Project(String name, String desc, boolean local) {
 		this.name = name;
 		this.desc = desc;
 		this.local = local;
+		 ple = new ProjectListElement(this);
 	}
 
 	public String getName() {
