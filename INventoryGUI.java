@@ -2,6 +2,8 @@ package inventory.main;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
@@ -9,7 +11,6 @@ import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
@@ -297,14 +298,22 @@ public class INventoryGUI extends JFrame {
 				} catch (Exception e1) {
 					e1.printStackTrace();
 				}
-				
-				for(int i = 0; i<20; i++) {
+				//////////////testing purposes only:
+				for(int i = 0; i<5; i++) {
 					
-					Projects.createProject("TestName" + i, true, "Just some stuffs.");
+					Projects.createProject("TestName" + i, true, "Just some stuff");
 				}
 				
-			
-				
+				newButton.setToolTipText("Pre-Pre-Alpha Stage: Try creating a new project! (Note: predefined names)");
+				newButton.addActionListener(new ActionListener() {
+					int numCreate = 0;
+					public void actionPerformed(ActionEvent arg0) {
+						System.out.println("Creating new project...");
+						Projects.createProject("RandomCreateButtonProjExample" + numCreate, true, "Nothing much");
+						numCreate++;
+					}
+				});
+				/////////////////////////////////////////////
 
 			}
 		});

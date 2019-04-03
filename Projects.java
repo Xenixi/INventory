@@ -2,6 +2,7 @@ package inventory.main;
 
 import java.awt.Dimension;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
@@ -15,39 +16,55 @@ public class Projects {
 	static ArrayList<Project> cloudProjectList = new ArrayList<>();
 	static JPanel projectPanelMain = new JPanel();
 	static JScrollPane projectPanel = new JScrollPane(projectPanelMain);
+	static File localProjectsFolder = new File("Projects");
+	static int next = 2;
 
 	public static void init(int loc) throws Exception {
 		if (loc == LOCAL) {
-			File localProjectsFolder = new File("Projects");
-			if(!localProjectsFolder.exists()) {
+
+			if (!localProjectsFolder.exists()) {
 				localProjectsFolder.mkdir();
 			}
-			File[] projectFiles = localProjectsFolder.listFiles();
-			
-			for(File f: projectFiles) {
-				localProjectList.clear();
-				//local list add readData
-			}
-			
+
 		} else if (loc == CLOUD) {
 
 		} else {
 			throw new Exception(
 					"Invalid constructor input for init() method. Must be either Projects.LOCAL or Projects.CLOUD");
 		}
+		updateInternal(loc);
+		updatePanelUI();
 	}
 
 	public static void updateInternal(int loc) throws Exception {
 		if (loc == LOCAL) {
-
+			File[] projectFiles = localProjectsFolder.listFiles();
+			localProjectList.clear();
+			for (File f : projectFiles) {
+				// local list add readData
+				Project newProj = new Project(INPRJHandler.readData(f));
+				if(!exists(newProj)) {
+					localProjectList.add(newProj);
+				}
+				
+				
+			}
 		} else if (loc == CLOUD) {
 
 		} else {
 			throw new Exception(
 					"Invalid constructor input for init() method. Must be either Projects.LOCAL or Projects.CLOUD");
 		}
+		updatePanelUI();
 	}
-
+	public static boolean exists(Project p) {
+		for (Project project: localProjectList) {
+			if (p.getName().equalsIgnoreCase(project.getName())) {
+				return true;
+			}
+		}
+		return false;
+	}
 	public static boolean createProject(String name, boolean local, String desc) {
 		if (local) {
 			for (Project p : localProjectList) {
@@ -56,7 +73,18 @@ public class Projects {
 					return false;
 				}
 			}
-			localProjectList.add(new Project(name, desc, local));
+
+			Project newProj = new Project(name, desc, local);
+			localProjectList.add(newProj);
+
+			try {
+				File newProjFile = new File("Projects/" + name + ".inprj");
+				newProjFile.createNewFile();
+				INPRJHandler.writeData(newProjFile, newProj);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+
 			updatePanelUI();
 			return true;
 		} else {
@@ -73,20 +101,8 @@ public class Projects {
 	}
 
 	public static void delProject(String name) {
-		int i = 0;
-		for (Project p : localProjectList) {
-			if (p.getName().equalsIgnoreCase(name)) {
-				localProjectList.remove(i);
-			}
-			i++;
-		}
-		for (Project p : cloudProjectList) {
-			if (p.getName().equalsIgnoreCase(name)) {
-				cloudProjectList.remove(i);
-				// must actually remove on server -- not completed yet
-			}
-		}
-		updatePanelUI();
+		//W.I.P. Doesn't do anything! -- except this:
+		System.out.println("This is a WIP, doesn't actually do anything yet!");
 	}
 
 	public static void renProject(String name, String newName) {
@@ -124,21 +140,28 @@ public class Projects {
 
 	/// project panel
 	public static void updatePanelUI() {
+
 		projectPanel.getVerticalScrollBar().setPreferredSize(new Dimension(15, 0));
 		projectPanel.setBorder(BorderFactory.createEmptyBorder());
 		projectPanel.setBackground(new Colors().getColor("BackGray"));
 
 		projectPanelMain.setLayout(null);
 		projectPanelMain.setBackground(new Colors().getColor("BackGray"));
-		int next = 2;
-		projectPanelMain.removeAll();
 
+		projectPanelMain.removeAll();
+		projectPanelMain.validate();
+		projectPanelMain.repaint();
+		next = 2;
 		for (Project p : localProjectList) {
 			p.setUILoc(next);
 			projectPanelMain.add(p.getPanelUI());
 			next = next + 23;
+			
+			
 		}
-
+		projectPanelMain.validate();
+		projectPanelMain.repaint();
+		
 		projectPanelMain.setPreferredSize(new Dimension(0, (localProjectList.size() * 23) + 2));
 
 	}

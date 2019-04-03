@@ -3,6 +3,8 @@ package inventory.gui.comp;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -14,9 +16,9 @@ import inventory.main.Fonts;
 import inventory.main.Project;
 
 public class ProjectListElement extends JPanel {
-
+	
 	public ProjectListElement(Project p) {
-
+		
 		this.setSize(new Dimension(275, 20));
 		JTextField nameLabel = new JTextField();
 		nameLabel.setFont(Fonts.getFont("OpenSans-semibold", 11f));
@@ -70,6 +72,22 @@ public class ProjectListElement extends JPanel {
 		settingsButton.setFont(Fonts.getFont("CreteRound-Italic", 24f));
 		settingsButton.setText("*");
 		settingsButton.setForeground(new Colors().getColor("Settings"));
-
+		
+		delButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+			p.delete();
+			}
+		});
+		renButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				
+			}
+		});
+		settingsButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				
+			}
+		});
+		
 	}
 }
