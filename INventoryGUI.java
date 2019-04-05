@@ -15,6 +15,8 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
+import inventory.guitool.PromptFrame;
+
 public class INventoryGUI extends JFrame {
 	public INventoryGUI() {
 		start();
@@ -292,28 +294,23 @@ public class INventoryGUI extends JFrame {
 				searchBarField.setCaretColor(new Colors().getColor("lighttext"));
 				projectsContainerPanel.setLayout(new BorderLayout());
 				projectsContainerPanel.add(Projects.getProjectPanel(), BorderLayout.CENTER);
-				
+				// Initialize Projects class
 				try {
 					Projects.init(Projects.LOCAL);
 				} catch (Exception e1) {
 					e1.printStackTrace();
 				}
-				//////////////testing purposes only:
-				for(int i = 0; i<5; i++) {
-					
-					Projects.createProject("TestName" + i, true, "Just some stuff");
-				}
+
+				////
 				
-				newButton.setToolTipText("Pre-Pre-Alpha Stage: Try creating a new project! (Note: predefined names)");
+				
 				newButton.addActionListener(new ActionListener() {
-					int numCreate = 0;
 					public void actionPerformed(ActionEvent arg0) {
-						System.out.println("Creating new project...");
-						Projects.createProject("RandomCreateButtonProjExample" + numCreate, true, "Nothing much");
-						numCreate++;
+						PromptFrame prompt = new PromptFrame();
+						prompt.promptMultiInput("New Project", "Please enter project details",new String[] {"Name", "Description"} ,new ImageIcon("GUI/Icon/NewIcon.png"));
 					}
 				});
-				/////////////////////////////////////////////
+				
 
 			}
 		});
