@@ -13,11 +13,12 @@ public class Project {
 
 	ProjectData data = new ProjectData();;
 
-	public Project(String name, String desc, boolean local) {
+	public Project(String name, String desc, boolean local, String[] tags) {
 
 		data.name = name;
 		data.desc = desc;
 		data.local = local;
+		data.tags = tags;
 		ple = new ProjectListElement(this);
 
 	}
@@ -78,6 +79,9 @@ public class Project {
 	}
 	public void changeSettings(String[] changes) {
 		
+	}
+	public String[] getTags() {
+		return data.tags;
 	}
 
 }

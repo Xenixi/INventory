@@ -314,7 +314,7 @@ public class INventoryGUI extends JFrame {
 						prompt.promptMultiInput("New Project", "Please enter project details",new String[] {"Name", "Description", "Tags (,)"} , new int[] {0},new ImageIcon("GUI/Icon/NewIcon.png"), new INventoryCallable() {
 							public void execute(String[] args) {
 								
-								Projects.createProject(args[0], true, args[1]);
+								Projects.createProject(args[0], true, args[1], args[2].replace(" ", "").split(","));
 								
 							}
 							public void cancelFallback() {

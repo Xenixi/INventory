@@ -65,7 +65,7 @@ public class Projects {
 		}
 		return false;
 	}
-	public static boolean createProject(String name, boolean local, String desc) {
+	public static boolean createProject(String name, boolean local, String desc, String[] tags) {
 		if (local) {
 			for (Project p : localProjectList) {
 				if (p.getName().equalsIgnoreCase(name)) {
@@ -74,7 +74,7 @@ public class Projects {
 				}
 			}
 
-			Project newProj = new Project(name, desc, local);
+			Project newProj = new Project(name, desc, local, tags);
 			localProjectList.add(newProj);
 
 			try {
@@ -94,7 +94,7 @@ public class Projects {
 					return false;
 				}
 			}
-			cloudProjectList.add(new Project(name, desc, local));
+			cloudProjectList.add(new Project(name, desc, local, tags));
 			updatePanelUI();
 			return true;
 		}

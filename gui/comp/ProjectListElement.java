@@ -16,9 +16,9 @@ import inventory.main.Fonts;
 import inventory.main.Project;
 
 public class ProjectListElement extends JPanel {
-	
+
 	public ProjectListElement(Project p) {
-		
+
 		this.setSize(new Dimension(275, 20));
 		JTextField nameLabel = new JTextField();
 		nameLabel.setFont(Fonts.getFont("OpenSans-semibold", 11f));
@@ -27,12 +27,30 @@ public class ProjectListElement extends JPanel {
 		this.setBackground(new Colors().getColor("ButtonsMain"));
 		nameLabel.setSize(200, 17);
 		nameLabel.setForeground(Color.WHITE);
-		nameLabel.setText("   " + p.getName());
+		StringBuilder sb = new StringBuilder();
+		sb.append("[");
+		int i = 0;
+		for (String tag : p.getTags()) {
+			if (i == 0) {
+				sb.append(tag + ", ");
+			} else if (i == 1) {
+				sb.append(tag);
+				if (p.getTags().length > 2) {
+					sb.append("...");
+				}
+				break;
+			}
+			i++;
+		}
+		sb.append("]");
+
+		nameLabel.setText("   " + p.getName() + " " + sb.toString());
 		nameLabel.setBackground(new Colors().getColor("BackGrayToneUp"));
 		nameLabel.setBorder(null);
 		nameLabel.setEditable(false);
 		nameLabel.setPreferredSize(new Dimension(210, 20));
 		nameLabel.setHorizontalAlignment(JTextField.CENTER);
+		nameLabel.setForeground(new Colors().getColor("InGreen"));
 		JPanel buttonsPanel = new JPanel();
 		buttonsPanel.setLayout(new BorderLayout());
 		this.add(buttonsPanel, BorderLayout.CENTER);
@@ -72,22 +90,22 @@ public class ProjectListElement extends JPanel {
 		settingsButton.setFont(Fonts.getFont("CreteRound-Italic", 24f));
 		settingsButton.setText("*");
 		settingsButton.setForeground(new Colors().getColor("Settings"));
-		
+
 		delButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-			p.delete();
+				p.delete();
 			}
 		});
 		renButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				
+
 			}
 		});
 		settingsButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				
+
 			}
 		});
-		
+
 	}
 }
