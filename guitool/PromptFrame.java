@@ -20,6 +20,7 @@ import javax.swing.SwingConstants;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 
+import inventory.interfaces.INventoryCallable;
 import inventory.main.Colors;
 import inventory.main.Fonts;
 
@@ -28,6 +29,7 @@ public class PromptFrame extends JFrame {
 	JPanel mainPanel = new JPanel();
 	JTextPane msgLabel = new JTextPane();
 	private static final long serialVersionUID = 1L;
+	int verticle = 65;
 
 	public PromptFrame(Point loc) {
 		this.setLocation(loc);
@@ -39,30 +41,26 @@ public class PromptFrame extends JFrame {
 		this.setVisible(false);
 	}
 
-	public void promptUser(String title, String message, ImageIcon icon) {
-		setup(title, message, icon);
+	
 
-		// reset();
-	}
-
-	public String[] promptMultiInput(String title, String message, String[] fields, ImageIcon icon) {
+	public String[] promptMultiInput(String title, String message, String[] fields, int[] require, ImageIcon icon, INventoryCallable call) {
 		LinkedHashMap<String, Dimension> fieldsMap = new LinkedHashMap<>();
 		for (String field : fields) {
 			fieldsMap.put(field, new Dimension(200, 25));
 		}
 
-		promptMultiInput(title, message, fieldsMap, icon);
+		promptMultiInput(title, message, fieldsMap, require, icon, call);
 		return null;
 	}
 
-	public void promptMultiInput(String title, String message, LinkedHashMap<String, Dimension> fields,
-			ImageIcon icon) {
+	public void promptMultiInput(String title, String message, LinkedHashMap<String, Dimension> fields, int[] require,
+			ImageIcon icon, INventoryCallable call) {
 
 		setup(title, message, icon);
 		JTextField[] entryFields = new JTextField[fields.keySet().size()];
 		JTextField[] labels = new JTextField[entryFields.length];
 
-		int verticle = 65;
+		
 		int i = 0;
 		for (Entry e : fields.entrySet()) {
 			String name = (String) e.getKey();
@@ -77,7 +75,7 @@ public class PromptFrame extends JFrame {
 			entryFields[i].setFont(Fonts.getFont("CreteRound-Regular", 13f));
 			entryFields[i].setForeground(new Colors().getColor("FieldText"));
 			entryFields[i].setHorizontalAlignment(SwingConstants.CENTER);
-
+			entryFields[i].setCaretColor(new Colors().getColor("FieldText"));
 			labels[i] = new JTextField();
 			labels[i].setText(name);
 			labels[i].setFont(Fonts.getFont("CreteRound-Regular", 13f));
@@ -122,19 +120,39 @@ public class PromptFrame extends JFrame {
 		cancelButton.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent arg0) {
-				System.out.println("Operation Canceled");
+				call.cancelFallback();
 				exit();
 			}
 		});
 
 		okButton.addActionListener(new ActionListener() {
+			
+			
+			
 			public void actionPerformed(ActionEvent arg0) {
+			boolean validated = true;
+			int a = 0;
+			for(JTextField field : entryFields) {
+				for(int requiredIndex : require) {
+					if(requiredIndex == a && field.getText().equalsIgnoreCase("")) {
+						validated = false;
+					}
+				}
+				a++;
+			}
+			if(validated) {
 				int i = 0;
+				toReturn = new String[entryFields.length];
 				for (JTextField field : entryFields) {
 					toReturn[i] = field.getText();
 					i++;
 				}
-
+				setVisible(false);
+				call.execute(toReturn);
+			}
+			else {
+				return;
+			}
 			}
 		});
 		// reset();
@@ -183,6 +201,12 @@ public class PromptFrame extends JFrame {
 
 	public String[] getAllInput() {
 		return toReturn;
+	}
+	public JPanel getPanel() {
+		return mainPanel;
+	}
+	public int getVerticleNext() {
+		return verticle;
 	}
 
 }

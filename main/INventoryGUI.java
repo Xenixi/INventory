@@ -10,12 +10,16 @@ import java.awt.event.MouseListener;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
 import inventory.guitool.PromptFrame;
+import inventory.interfaces.INventoryCallable;
 
 public class INventoryGUI extends JFrame {
 	public INventoryGUI() {
@@ -307,7 +311,17 @@ public class INventoryGUI extends JFrame {
 				newButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent arg0) {
 						PromptFrame prompt = new PromptFrame();
-						prompt.promptMultiInput("New Project", "Please enter project details",new String[] {"Name", "Description"} ,new ImageIcon("GUI/Icon/NewIcon.png"));
+						prompt.promptMultiInput("New Project", "Please enter project details",new String[] {"Name", "Description", "Tags (,)"} , new int[] {0},new ImageIcon("GUI/Icon/NewIcon.png"), new INventoryCallable() {
+							public void execute(String[] args) {
+								
+								Projects.createProject(args[0], true, args[1]);
+								
+							}
+							public void cancelFallback() {
+								System.out.println("Operation canceled");
+							}
+						});
+						
 					}
 				});
 				
