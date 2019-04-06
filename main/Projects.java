@@ -14,10 +14,13 @@ public class Projects {
 	public static final int CLOUD = 1;
 	static ArrayList<Project> localProjectList = new ArrayList<>();
 	static ArrayList<Project> cloudProjectList = new ArrayList<>();
+	static ArrayList<Project> localProjectSearchList = new ArrayList<>();
 	static JPanel projectPanelMain = new JPanel();
 	static JScrollPane projectPanel = new JScrollPane(projectPanelMain);
 	static File localProjectsFolder = new File("Projects");
 	static int next = 2;
+	static boolean searching = false;
+	static String searchingText = null;
 
 	public static void init(int loc) throws Exception {
 		if (loc == LOCAL) {
@@ -43,11 +46,10 @@ public class Projects {
 			for (File f : projectFiles) {
 				// local list add readData
 				Project newProj = new Project(INPRJHandler.readData(f));
-				if(!exists(newProj)) {
+				if (!exists(newProj)) {
 					localProjectList.add(newProj);
 				}
-				
-				
+
 			}
 		} else if (loc == CLOUD) {
 
@@ -57,14 +59,16 @@ public class Projects {
 		}
 		updatePanelUI();
 	}
+
 	public static boolean exists(Project p) {
-		for (Project project: localProjectList) {
+		for (Project project : localProjectList) {
 			if (p.getName().equalsIgnoreCase(project.getName())) {
 				return true;
 			}
 		}
 		return false;
 	}
+
 	public static boolean createProject(String name, boolean local, String desc, String[] tags) {
 		if (local) {
 			for (Project p : localProjectList) {
@@ -101,7 +105,7 @@ public class Projects {
 	}
 
 	public static void delProject(String name) {
-		//W.I.P. Doesn't do anything! -- except this:
+		// W.I.P. Doesn't do anything! -- except this:
 		System.out.println("This is a WIP, doesn't actually do anything yet!");
 	}
 
@@ -139,8 +143,29 @@ public class Projects {
 	}
 
 	/// project panel
-	public static void updatePanelUI() {
+	public static void searchMode(String text) {
+		searchingText = text;
+		if (!searching) {
+			searching = true;
+		}
+		localProjectSearchList.clear();
+		for (Project p : localProjectList) {
+			if (p.getName().toLowerCase().contains(text.toLowerCase())) {
+				localProjectSearchList.add(p);
+			}
 
+		}
+		updatePanelUI();
+
+	}
+
+	public static void closeSearch() {
+		localProjectSearchList.clear();
+		searching = false;
+		updatePanelUI();
+	}
+
+	public static void updatePanelUI() {
 		projectPanel.getVerticalScrollBar().setPreferredSize(new Dimension(15, 0));
 		projectPanel.setBorder(BorderFactory.createEmptyBorder());
 		projectPanel.setBackground(new Colors().getColor("BackGray"));
@@ -151,18 +176,22 @@ public class Projects {
 		projectPanelMain.removeAll();
 		projectPanelMain.validate();
 		projectPanelMain.repaint();
+
 		next = 2;
-		for (Project p : localProjectList) {
-			p.setUILoc(next);
-			projectPanelMain.add(p.getPanelUI());
-			next = next + 23;
-			
-			
-		}
-		projectPanelMain.validate();
-		projectPanelMain.repaint();
+			String oldText = "";
+			for (Project p : searching ? localProjectSearchList : localProjectList) {
+				p.setUILoc(next);
+				projectPanelMain.add(p.getPanelUI());
+				next = next + 23;
+				if(searching) {
+				//add selection -- marking area where match was found
+				}
+			}
+			projectPanelMain.validate();
+			projectPanelMain.repaint();
+
+			projectPanelMain.setPreferredSize(new Dimension(0, (localProjectList.size() * 23) + 2));
 		
-		projectPanelMain.setPreferredSize(new Dimension(0, (localProjectList.size() * 23) + 2));
 
 	}
 

@@ -2,8 +2,13 @@ package inventory.main;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.KeyboardFocusManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
@@ -306,24 +311,35 @@ public class INventoryGUI extends JFrame {
 				}
 
 				////
+
+				newButton.addActionListener(ActionManager.NEW_PROJECT);
 				
-				
-				newButton.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent arg0) {
-						PromptFrame prompt = new PromptFrame();
-						prompt.promptMultiInput("New Project", "Please enter project details",new String[] {"Name", "Description", "Tags (,)"} , new int[] {0},new ImageIcon("GUI/Icon/NewIcon.png"), new INventoryCallable() {
-							public void execute(String[] args) {
-								
-								Projects.createProject(args[0], true, args[1], args[2].replace(" ", "").split(","));
-								
-							}
-							public void cancelFallback() {
-								System.out.println("Operation canceled");
-							}
-						});
+				searchProjectsField.addKeyListener(new KeyListener() {
+					
+					@Override
+					public void keyTyped(KeyEvent e) {
+						String text = searchProjectsField.getText();
+						if(!(text.equalsIgnoreCase("Search")) && !(text.equalsIgnoreCase(""))) {
+							Projects.searchMode(text);
+						} else {
+							//Projects.closeSearch();
+							Projects.searchMode(text);
+						}
+					
+					}
+					
+					@Override
+					public void keyReleased(KeyEvent e) {
+						
+					}
+					
+					@Override
+					public void keyPressed(KeyEvent e) {
 						
 					}
 				});
+				
+					
 				
 
 			}

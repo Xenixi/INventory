@@ -2,10 +2,13 @@ package inventory.guitool;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.KeyEventDispatcher;
+import java.awt.KeyboardFocusManager;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.util.LinkedHashMap;
 import java.util.Map.Entry;
 
@@ -29,6 +32,11 @@ public class PromptFrame extends JFrame {
 	JPanel mainPanel = new JPanel();
 	JTextPane msgLabel = new JTextPane();
 	private static final long serialVersionUID = 1L;
+	int[] require;
+	INventoryCallable call;
+	JTextField[] entryFields = null;
+	KeyEventDispatcher dispatcher = null;
+
 	int verticle = 65;
 
 	public PromptFrame(Point loc) {
@@ -41,9 +49,8 @@ public class PromptFrame extends JFrame {
 		this.setVisible(false);
 	}
 
-	
-
-	public String[] promptMultiInput(String title, String message, String[] fields, int[] require, ImageIcon icon, INventoryCallable call) {
+	public String[] promptMultiInput(String title, String message, String[] fields, int[] require, ImageIcon icon,
+			INventoryCallable call) {
 		LinkedHashMap<String, Dimension> fieldsMap = new LinkedHashMap<>();
 		for (String field : fields) {
 			fieldsMap.put(field, new Dimension(200, 25));
@@ -55,12 +62,13 @@ public class PromptFrame extends JFrame {
 
 	public void promptMultiInput(String title, String message, LinkedHashMap<String, Dimension> fields, int[] require,
 			ImageIcon icon, INventoryCallable call) {
+		this.require = require;
+		this.call = call;
 
 		setup(title, message, icon);
-		JTextField[] entryFields = new JTextField[fields.keySet().size()];
+		entryFields = new JTextField[fields.keySet().size()];
 		JTextField[] labels = new JTextField[entryFields.length];
 
-		
 		int i = 0;
 		for (Entry e : fields.entrySet()) {
 			String name = (String) e.getKey();
@@ -120,41 +128,30 @@ public class PromptFrame extends JFrame {
 		cancelButton.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent arg0) {
-				call.cancelFallback();
-				exit();
+				cancel();
 			}
 		});
-
 		okButton.addActionListener(new ActionListener() {
-			
-			
-			
+
 			public void actionPerformed(ActionEvent arg0) {
-			boolean validated = true;
-			int a = 0;
-			for(JTextField field : entryFields) {
-				for(int requiredIndex : require) {
-					if(requiredIndex == a && field.getText().equalsIgnoreCase("")) {
-						validated = false;
-					}
-				}
-				a++;
-			}
-			if(validated) {
-				int i = 0;
-				toReturn = new String[entryFields.length];
-				for (JTextField field : entryFields) {
-					toReturn[i] = field.getText();
-					i++;
-				}
-				setVisible(false);
-				call.execute(toReturn);
-			}
-			else {
-				return;
-			}
+				ok();
 			}
 		});
+		dispatcher = new KeyEventDispatcher() {
+
+			@Override
+			public boolean dispatchKeyEvent(KeyEvent e) {
+				if (e.getID() == KeyEvent.KEY_PRESSED && e.getKeyCode() == KeyEvent.VK_ENTER) {
+					ok();
+				} else if (e.getID() == KeyEvent.KEY_PRESSED && e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+					cancel();
+				}
+				return false;
+			}
+		};
+
+		KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(dispatcher);
+
 		// reset();
 	}
 
@@ -196,17 +193,54 @@ public class PromptFrame extends JFrame {
 		toReturn = null;
 		msgLabel = new JTextPane();
 		mainPanel = new JPanel();
-
+		require = null;
+		call = null;
+		entryFields = null;
 	}
 
 	public String[] getAllInput() {
 		return toReturn;
 	}
+
 	public JPanel getPanel() {
 		return mainPanel;
 	}
+
 	public int getVerticleNext() {
 		return verticle;
+	}
+
+	private void ok() {
+		boolean validated = true;
+		int a = 0;
+		for (JTextField field : entryFields) {
+			for (int requiredIndex : require) {
+				if (requiredIndex == a && field.getText().equalsIgnoreCase("")) {
+					validated = false;
+				}
+			}
+			a++;
+		}
+		if (validated) {
+			int i = 0;
+			toReturn = new String[entryFields.length];
+			for (JTextField field : entryFields) {
+				toReturn[i] = field.getText();
+				i++;
+			}
+			setVisible(false);
+			KeyboardFocusManager.getCurrentKeyboardFocusManager().removeKeyEventDispatcher(dispatcher);
+			call.execute(toReturn);
+		} else {
+			return;
+		}
+	}
+
+	private void cancel() {
+		call.cancelFallback();
+		KeyboardFocusManager.getCurrentKeyboardFocusManager().removeKeyEventDispatcher(dispatcher);
+		exit();
+
 	}
 
 }

@@ -16,11 +16,14 @@ import inventory.main.Fonts;
 import inventory.main.Project;
 
 public class ProjectListElement extends JPanel {
-
+	JTextField nameLabel = new JTextField();
+	public JTextField getLabel() {
+		return nameLabel;
+	}
 	public ProjectListElement(Project p) {
-
+		
 		this.setSize(new Dimension(275, 20));
-		JTextField nameLabel = new JTextField();
+		
 		nameLabel.setFont(Fonts.getFont("OpenSans-semibold", 11f));
 		this.setLayout(new BorderLayout());
 		this.add(nameLabel, BorderLayout.WEST);
@@ -28,11 +31,16 @@ public class ProjectListElement extends JPanel {
 		nameLabel.setSize(200, 17);
 		nameLabel.setForeground(Color.WHITE);
 		StringBuilder sb = new StringBuilder();
+		if(p.getTags().length > 0) {
 		sb.append("[");
 		int i = 0;
 		for (String tag : p.getTags()) {
 			if (i == 0) {
-				sb.append(tag + ", ");
+				sb.append(tag);
+				if(p.getTags().length > 1) {
+					sb.append(", ");
+				}
+				
 			} else if (i == 1) {
 				sb.append(tag);
 				if (p.getTags().length > 2) {
@@ -43,7 +51,7 @@ public class ProjectListElement extends JPanel {
 			i++;
 		}
 		sb.append("]");
-
+		}
 		nameLabel.setText("   " + p.getName() + " " + sb.toString());
 		nameLabel.setBackground(new Colors().getColor("BackGrayToneUp"));
 		nameLabel.setBorder(null);
