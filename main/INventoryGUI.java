@@ -2,6 +2,7 @@ package inventory.main;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.KeyEventDispatcher;
 import java.awt.KeyboardFocusManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -339,9 +340,17 @@ public class INventoryGUI extends JFrame {
 					}
 				});
 				
-					
+				KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(ActionManager.dispatcherMain);
 				
-
+				delButton.addActionListener(new ActionListener() {
+					
+					
+					public void actionPerformed(ActionEvent arg0) {
+						Projects.delSelected();
+					}
+				});
+				
+				
 			}
 		});
 	}

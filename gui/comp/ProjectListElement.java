@@ -5,6 +5,9 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -14,16 +17,22 @@ import javax.swing.JTextField;
 import inventory.main.Colors;
 import inventory.main.Fonts;
 import inventory.main.Project;
+import inventory.main.Projects;
 
 public class ProjectListElement extends JPanel {
+	static ArrayList<Project> selecting = new ArrayList<>();
 	JTextField nameLabel = new JTextField();
+
 	public JTextField getLabel() {
 		return nameLabel;
 	}
+
+	Project project;
+
 	public ProjectListElement(Project p) {
-		
+		this.project = p;
 		this.setSize(new Dimension(275, 20));
-		
+
 		nameLabel.setFont(Fonts.getFont("OpenSans-semibold", 11f));
 		this.setLayout(new BorderLayout());
 		this.add(nameLabel, BorderLayout.WEST);
@@ -31,26 +40,26 @@ public class ProjectListElement extends JPanel {
 		nameLabel.setSize(200, 17);
 		nameLabel.setForeground(Color.WHITE);
 		StringBuilder sb = new StringBuilder();
-		if(p.getTags().length > 0) {
-		sb.append("[");
-		int i = 0;
-		for (String tag : p.getTags()) {
-			if (i == 0) {
-				sb.append(tag);
-				if(p.getTags().length > 1) {
-					sb.append(", ");
+		if (p.getTags().length > 0) {
+			sb.append("[");
+			int i = 0;
+			for (String tag : p.getTags()) {
+				if (i == 0) {
+					sb.append(tag);
+					if (p.getTags().length > 1) {
+						sb.append(", ");
+					}
+
+				} else if (i == 1) {
+					sb.append(tag);
+					if (p.getTags().length > 2) {
+						sb.append("...");
+					}
+					break;
 				}
-				
-			} else if (i == 1) {
-				sb.append(tag);
-				if (p.getTags().length > 2) {
-					sb.append("...");
-				}
-				break;
+				i++;
 			}
-			i++;
-		}
-		sb.append("]");
+			sb.append("]");
 		}
 		nameLabel.setText("   " + p.getName() + " " + sb.toString());
 		nameLabel.setBackground(new Colors().getColor("BackGrayToneUp"));
@@ -101,7 +110,8 @@ public class ProjectListElement extends JPanel {
 
 		delButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				p.delete();
+				Projects.setSelected(p);
+				Projects.delSelected();
 			}
 		});
 		renButton.addActionListener(new ActionListener() {
@@ -114,6 +124,45 @@ public class ProjectListElement extends JPanel {
 
 			}
 		});
+		nameLabel.addMouseListener(new MouseListener() {
+			
+			@Override
+			public void mouseReleased(MouseEvent e) {
 
+			}
+
+			@Override
+			public void mousePressed(MouseEvent e) {
+				if (e.isControlDown()) {
+					Projects.addSelected(p);
+				} else {
+					Projects.setSelected(p);
+				}
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent e) {
+
+			}
+
+			@Override
+			public void mouseClicked(MouseEvent e) {
+
+			}
+		});
+
+	}
+
+	public void refresh() {
+		if (project.isSelected()) {
+			nameLabel.setBackground(new Colors().getColor("ButtonsMainSelected"));
+		} else {
+			nameLabel.setBackground(new Colors().getColor("ButtonsMain"));
+		}
 	}
 }

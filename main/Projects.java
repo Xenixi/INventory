@@ -6,8 +6,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+
+import inventory.guitool.PromptFrame;
+import inventory.interfaces.INventoryCallable;
 
 public class Projects {
 	public static final int LOCAL = 0;
@@ -21,6 +25,7 @@ public class Projects {
 	static int next = 2;
 	static boolean searching = false;
 	static String searchingText = null;
+	static ArrayList<Project> currentlySelected = new ArrayList<>();
 
 	public static void init(int loc) throws Exception {
 		if (loc == LOCAL) {
@@ -45,8 +50,11 @@ public class Projects {
 			localProjectList.clear();
 			for (File f : projectFiles) {
 				// local list add readData
-				Project newProj = new Project(INPRJHandler.readData(f));
-				if (!exists(newProj)) {
+				ProjectData pd = INPRJHandler.readData(f);
+
+				Project newProj = pd.isCorrupt() ? null : new Project(INPRJHandler.readData(f));
+
+				if ((!(newProj == null) && !exists(newProj))) {
 					localProjectList.add(newProj);
 				}
 
@@ -104,24 +112,27 @@ public class Projects {
 		}
 	}
 
-	public static void delProject(String name) {
-		// W.I.P. Doesn't do anything! -- except this:
-		System.out.println("This is a WIP, doesn't actually do anything yet!");
+	public static void delProject(Project... proj) {
+		System.out.println("Deleteing project: '" + (proj[0].getName() + ((proj.length > 1) ? "' -- etc." : "'")));
+		for (Project p : proj) {
+			for (File f : localProjectsFolder.listFiles()) {
+				if (new Project(INPRJHandler.readData(f)).equals(p)) {
+					f.delete();
+					try {
+						updateInternal(LOCAL);
+						updatePanelUI();
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+
+				}
+			}
+		}
+
 	}
 
-	public static void renProject(String name, String newName) {
+	public static void renProject(Project p, String newName) {
 
-		for (Project p : localProjectList) {
-			if (p.getName().equalsIgnoreCase(name)) {
-				p.setName(newName);
-			}
-		}
-		for (Project p : cloudProjectList) {
-			if (p.getName().equalsIgnoreCase(name)) {
-				p.setName(newName);
-				// must actually change name on server -- not completed yet
-			}
-		}
 		updatePanelUI();
 
 	}
@@ -178,26 +189,114 @@ public class Projects {
 		projectPanelMain.repaint();
 
 		next = 2;
-			String oldText = "";
-			for (Project p : searching ? localProjectSearchList : localProjectList) {
-				p.setUILoc(next);
-				projectPanelMain.add(p.getPanelUI());
-				next = next + 23;
-				if(searching) {
-				//add selection -- marking area where match was found
-				}
+		String oldText = "";
+		for (Project p : searching ? localProjectSearchList : localProjectList) {
+			p.setUILoc(next);
+			projectPanelMain.add(p.getPanelUI());
+			next = next + 23;
+			if (searching) {
+				// add selection -- marking area where match was found
 			}
-			projectPanelMain.validate();
-			projectPanelMain.repaint();
+		}
+		projectPanelMain.validate();
+		projectPanelMain.repaint();
 
-			projectPanelMain.setPreferredSize(new Dimension(0, (localProjectList.size() * 23) + 2));
-		
+		projectPanelMain.setPreferredSize(new Dimension(0, (localProjectList.size() * 23) + 2));
 
 	}
 
 	public static JScrollPane getProjectPanel() {
 		updatePanelUI();
 		return projectPanel;
+	}
+
+	public static void setSelected(Project p) {
+		for (Project project : localProjectList) {
+			if (project.isSelected()) {
+				project.setSelected(false);
+			}
+		}
+		currentlySelected.clear();
+		if (!(p == null)) {
+			p.setSelected(true);
+			currentlySelected.add(p);
+		}
+
+	}
+
+	public static void addSelected(Project p) {
+		boolean selectedAlready = false;
+		for (Project project : currentlySelected) {
+			if (project.equals(p)) {
+				selectedAlready = true;
+			}
+		}
+		if (!selectedAlready) {
+			if (!(p == null)) {
+				p.setSelected(true);
+			}
+			currentlySelected.add(p);
+		}
+	}
+
+	public static void delSelected() {
+		PromptFrame pf = new PromptFrame();
+		String[] names = new String[currentlySelected.size()];
+		int[] numbers = new int[currentlySelected.size()]; 
+		int a = 0;
+		for(Project project: currentlySelected) {
+			names[a] = project.getName();
+			numbers[a] = a;
+			a++;
+		}
+		if(currentlySelected.size() > 0) {
+		pf.promptMultiInput("Delete Project(s)", "Please type project name(s) to confirm deletion.", names, numbers, new ImageIcon("gui/icon/removered.png"), new INventoryCallable() {
+
+			@Override
+			public void execute(String[] args) {
+				int b = 0;
+				boolean confirmed = true;
+				for(String name: names) {
+					if(!(args[b].equals(name))) {
+						confirmed = false;
+					}
+					b++;
+				}
+				if (confirmed) {
+					Project[] ps = new Project[currentlySelected.size()];
+					int i = 0;
+					for (Project p : currentlySelected) {
+						System.out.println("Selected:");
+						System.out.println(p);
+						ps[i] = p;
+						i++;
+					}
+					delProject(ps);
+				} else {
+					
+					new PromptFrame().promptMultiInput("Delete Projects - Confirmation Failure", "Not all project names were confirmed.", new String[] {}, new int[] {}, new ImageIcon("GUI/icon/removered.png"), new INventoryCallable() {
+						
+						@Override
+						public void execute(String[] args) {
+							return;
+						}
+						
+						@Override
+						public void cancelFallback() {
+							return;
+						}
+					});
+				}
+			}
+
+			@Override
+			public void cancelFallback() {
+				return;
+			}
+			
+		});
+		}
+		
 	}
 
 }

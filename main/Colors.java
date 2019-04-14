@@ -21,6 +21,7 @@ public class Colors {
 		values.put("RED", new Color(255,0,0));
 		values.put("RenBlue", new Color(18, 133, 248));
 		values.put("Settings", new Color(124, 77, 189));
+		values.put("ButtonsMainSelected", new Color(90,90,90));
 	}
 
 	public Color getColor(String name) {

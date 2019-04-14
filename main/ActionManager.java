@@ -15,7 +15,16 @@ import inventory.interfaces.INventoryCallable;
 
 public class ActionManager {
 	private static boolean enabled = false;
-	static KeyEventDispatcher dispatcherMain;
+	static KeyEventDispatcher dispatcherMain = new KeyEventDispatcher() {
+		
+		@Override
+		public boolean dispatchKeyEvent(KeyEvent e) {
+			if(e.getID() == KeyEvent.KEY_PRESSED && e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+				Projects.setSelected(null);
+			}
+			return false;
+		}
+	};
 	static HashMap<int[], INventoryCallable> keyMap = new HashMap<>();
 	public static final ActionListener NEW_PROJECT = new ActionListener() {
 		@Override

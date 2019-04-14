@@ -13,14 +13,16 @@ public class INPRJHandler {
 		try {
 			FileInputStream fis = new FileInputStream(f);
 			ObjectInputStream ois = new ObjectInputStream(fis);
-			return ((ProjectData)ois.readObject());
+			ProjectData pd = (ProjectData)ois.readObject();
+			ois.close();
+			fis.close();
+			return pd;
 			
 		} catch (Exception e) {
-			e.printStackTrace();
+			return new ProjectData(true);
 		}
 		
 		
-		return null;
 	}
 
 	public static void writeData(File f, Project p) {

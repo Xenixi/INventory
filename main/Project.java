@@ -12,6 +12,8 @@ public class Project {
 	ProjectListElement ple;
 
 	ProjectData data = new ProjectData();;
+	
+	boolean selected;
 
 	public Project(String name, String desc, boolean local, String[] tags) {
 
@@ -69,19 +71,30 @@ public class Project {
 		data.name = name;
 	}
 
-	// PLE Use only -- Yes I know it just calls the other methods in Projects, but it's for organization (Or at least my best attempt at it).
-
-	public void delete() {
-		Projects.delProject(getName());
+	public void setSelected(boolean selected) {
+		this.selected = selected;
+		ple.refresh();
 	}
-	public void rename(String newName) {
-		Projects.renProject(getName(), newName);
+	public boolean isSelected() {
+		return selected;
 	}
-	public void changeSettings(String[] changes) {
-		
-	}
+	
 	public String[] getTags() {
 		return data.tags;
 	}
-
+	//override
+	public boolean equals(Object o) {
+		if(((Project)o).getName().equalsIgnoreCase(this.getName())) {
+			return true;
+		}
+		return false;
+	}
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		for(String tag: data.tags) {
+			sb.append("|");
+			sb.append(tag);
+		}
+		return "'" + data.name + "' -- Tags: " + sb;
+	}
 }
