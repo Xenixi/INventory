@@ -119,6 +119,7 @@ public class Projects {
 				if (new Project(INPRJHandler.readData(f)).equals(p)) {
 					f.delete();
 					try {
+						setSelected(null);
 						updateInternal(LOCAL);
 						updatePanelUI();
 					} catch (Exception e) {
@@ -242,61 +243,64 @@ public class Projects {
 	public static void delSelected() {
 		PromptFrame pf = new PromptFrame();
 		String[] names = new String[currentlySelected.size()];
-		int[] numbers = new int[currentlySelected.size()]; 
+		int[] numbers = new int[currentlySelected.size()];
 		int a = 0;
-		for(Project project: currentlySelected) {
+		for (Project project : currentlySelected) {
 			names[a] = project.getName();
 			numbers[a] = a;
 			a++;
 		}
-		if(currentlySelected.size() > 0) {
-		pf.promptMultiInput("Delete Project(s)", "Please type project name(s) to confirm deletion.", names, numbers, new ImageIcon("gui/icon/removered.png"), new INventoryCallable() {
+		if (currentlySelected.size() > 0) {
+			pf.promptMultiInput("Delete Project(s)", "Please type project name(s) to confirm deletion.", names, numbers,
+					new ImageIcon("gui/icon/removered.png"), new INventoryCallable() {
 
-			@Override
-			public void execute(String[] args) {
-				int b = 0;
-				boolean confirmed = true;
-				for(String name: names) {
-					if(!(args[b].equals(name))) {
-						confirmed = false;
-					}
-					b++;
-				}
-				if (confirmed) {
-					Project[] ps = new Project[currentlySelected.size()];
-					int i = 0;
-					for (Project p : currentlySelected) {
-						System.out.println("Selected:");
-						System.out.println(p);
-						ps[i] = p;
-						i++;
-					}
-					delProject(ps);
-				} else {
-					
-					new PromptFrame().promptMultiInput("Delete Projects - Confirmation Failure", "Not all project names were confirmed.", new String[] {}, new int[] {}, new ImageIcon("GUI/icon/removered.png"), new INventoryCallable() {
-						
 						@Override
 						public void execute(String[] args) {
-							return;
+							int b = 0;
+							boolean confirmed = true;
+							for (String name : names) {
+								if (!(args[b].equals(name))) {
+									confirmed = false;
+								}
+								b++;
+							}
+							if (confirmed) {
+								Project[] ps = new Project[currentlySelected.size()];
+								int i = 0;
+								for (Project p : currentlySelected) {
+									System.out.println("Selected:");
+									System.out.println(p);
+									ps[i] = p;
+									i++;
+								}
+								delProject(ps);
+							} else {
+
+								new PromptFrame().promptMultiInput("Delete Projects - Confirmation Failure",
+										"Not all project names were confirmed.", new String[] {}, new int[] {},
+										new ImageIcon("GUI/icon/removered.png"), new INventoryCallable() {
+
+											@Override
+											public void execute(String[] args) {
+												return;
+											}
+
+											@Override
+											public void cancelFallback() {
+												return;
+											}
+										});
+							}
 						}
-						
+
 						@Override
 						public void cancelFallback() {
 							return;
 						}
-					});
-				}
-			}
 
-			@Override
-			public void cancelFallback() {
-				return;
-			}
-			
-		});
+					});
 		}
-		
+
 	}
 
 }
