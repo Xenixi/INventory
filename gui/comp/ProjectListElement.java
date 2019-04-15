@@ -15,6 +15,7 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import inventory.guitool.ProjectSettingsFrame;
 import inventory.guitool.PromptFrame;
 import inventory.interfaces.INventoryCallable;
 import inventory.main.Colors;
@@ -135,7 +136,7 @@ public class ProjectListElement extends JPanel {
 		});
 		settingsButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-
+				ProjectSettingsFrame.displayFrame(p);
 			}
 		});
 		nameLabel.addMouseListener(new MouseListener() {
