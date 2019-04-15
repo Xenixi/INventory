@@ -10,10 +10,13 @@ import java.awt.event.MouseListener;
 import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import inventory.guitool.PromptFrame;
+import inventory.interfaces.INventoryCallable;
 import inventory.main.Colors;
 import inventory.main.Fonts;
 import inventory.main.Project;
@@ -116,7 +119,18 @@ public class ProjectListElement extends JPanel {
 		});
 		renButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-
+				new PromptFrame().promptMultiInput("Rename Project: '" + p.getName() + "'", "Please enter a new project name:", new String[] {"Name"}, new int[] {0}, new ImageIcon("logo.png"), new INventoryCallable() {
+					
+					@Override
+					public void execute(String[] args) {
+						Projects.renProject(p, args[0]);
+					}
+					
+					@Override
+					public void cancelFallback() {
+						
+					}
+				});
 			}
 		});
 		settingsButton.addActionListener(new ActionListener() {
@@ -155,14 +169,41 @@ public class ProjectListElement extends JPanel {
 
 			}
 		});
+		nameLabel.setToolTipText(p.getDesc().substring(0, p.getDesc().length() > 40 ? 40 : p.getDesc().length()) + (p.getDesc().length() > 40 ? "..." : ""));
+		
+		
 
 	}
 
 	public void refresh() {
 		if (project.isSelected()) {
+			
 			nameLabel.setBackground(new Colors().getColor("ButtonsMainSelected"));
 		} else {
 			nameLabel.setBackground(new Colors().getColor("ButtonsMain"));
 		}
+		StringBuilder sb = new StringBuilder();
+		if (project.getTags().length > 0) {
+			sb.append("[");
+			int i = 0;
+			for (String tag : project.getTags()) {
+				if (i == 0) {
+					sb.append(tag);
+					if (project.getTags().length > 1) {
+						sb.append(", ");
+					}
+
+				} else if (i == 1) {
+					sb.append(tag);
+					if (project.getTags().length > 2) {
+						sb.append("...");
+					}
+					break;
+				}
+				i++;
+			}
+			sb.append("]");
+		}
+		nameLabel.setText("   " + project.getName() + " " + sb.toString());
 	}
 }

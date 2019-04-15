@@ -1,19 +1,21 @@
 package inventory.main;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
-import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import inventory.gui.comp.ProjectListElement;
 
 public class Project {
 
 	ProjectListElement ple;
-
+	File linkedData;
 	ProjectData data = new ProjectData();;
-	
 	boolean selected;
+	ArrayList<String> nameHistory = new ArrayList<>();
 
 	public Project(String name, String desc, boolean local, String[] tags) {
 
@@ -22,12 +24,15 @@ public class Project {
 		data.local = local;
 		data.tags = tags;
 		ple = new ProjectListElement(this);
-
+		linkedData = new File("Projects/" + data.name + ".inprj");
+		nameHistory.add(data.name);
 	}
 
 	public Project(ProjectData data) {
 		this.data = data;
 		ple = new ProjectListElement(this);
+		linkedData = new File("Projects/" + data.name + ".inprj");
+		nameHistory.add(data.name);
 	}
 
 	public String getName() {
@@ -35,7 +40,7 @@ public class Project {
 	}
 
 	public String getDesc() {
-		return data.name;
+		return data.desc;
 	}
 
 	public boolean isLocal() {
@@ -68,7 +73,14 @@ public class Project {
 	}
 
 	public void setName(String name) {
+		nameHistory.add(data.name);
 		data.name = name;
+		updateFileName();
+	}
+	public void updateFileName() {
+		File newFile = new File("Projects/" + data.name + ".inprj");
+		linkedData.renameTo(newFile);
+		linkedData = newFile;
 	}
 
 	public void setSelected(boolean selected) {
@@ -81,6 +93,30 @@ public class Project {
 	
 	public String[] getTags() {
 		return data.tags;
+	}
+	public boolean isFoundIn(List<Project> projs) {
+		for(Project p: projs) {
+			if(this.equals(p)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	public Project locate(List<Project> projs) {
+		for(Project p : projs) {
+			if(this.equals(p)) {
+				return p;
+			}
+		}
+		return null;
+	}
+	public boolean equalsHistory(Project p) {
+		for(String name : nameHistory) {
+			if(name.equalsIgnoreCase(p.getName())) {
+				return true;
+			}
+		}
+		return false;
 	}
 	//override
 	public boolean equals(Object o) {

@@ -88,14 +88,7 @@ public class Projects {
 
 			Project newProj = new Project(name, desc, local, tags);
 			localProjectList.add(newProj);
-
-			try {
-				File newProjFile = new File("Projects/" + name + ".inprj");
-				newProjFile.createNewFile();
-				INPRJHandler.writeData(newProjFile, newProj);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			saveAll();
 
 			updatePanelUI();
 			return true;
@@ -133,7 +126,9 @@ public class Projects {
 	}
 
 	public static void renProject(Project p, String newName) {
-
+		p.setName(newName);
+		saveAll();
+		p.getPanelUI().refresh();
 		updatePanelUI();
 
 	}
@@ -301,6 +296,29 @@ public class Projects {
 					});
 		}
 
+	}
+
+	public static void saveAll() {
+		for (Project p : localProjectList) {
+			boolean match = false;
+			for (File f : localProjectsFolder.listFiles()) {
+				if ((new Project(INPRJHandler.readData(f.getAbsoluteFile()))).equalsHistory(p)) {
+					INPRJHandler.writeData(f, p);
+
+					match = true;
+				}
+
+			}
+			if (!match) {
+				File projFile = new File("Projects/" + p.getName() + ".inprj");
+				try {
+					projFile.createNewFile();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				INPRJHandler.writeData(projFile, p);
+			}
+		}
 	}
 
 }

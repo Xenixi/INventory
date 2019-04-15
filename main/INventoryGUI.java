@@ -347,6 +347,7 @@ public class INventoryGUI extends JFrame {
 					
 					public void actionPerformed(ActionEvent arg0) {
 						Projects.delSelected();
+						
 					}
 				});
 				
