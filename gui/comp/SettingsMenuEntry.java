@@ -16,9 +16,10 @@ import inventory.main.Fonts;
 
 public class SettingsMenuEntry extends JPanel{
 	JTextField label = new JTextField();
+	String name = null;
 	public SettingsMenuEntry(String title, Point loc, SettingsMenuCallable onClickCall) {
 		this.setLocation(loc);
-		
+		this.name = title;
 		
 		this.setLayout(new BorderLayout());
 		this.setSize(new Dimension(147,20));
@@ -44,5 +45,8 @@ public class SettingsMenuEntry extends JPanel{
 		} else {
 			label.setBackground(new Colors().getColor("ButtonsMain"));
 		}
+	}
+	public String getName() {
+		return name;
 	}
 }
