@@ -136,7 +136,7 @@ public class ProjectListElement extends JPanel {
 		});
 		settingsButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				ProjectSettingsFrame.displayFrame(p);
+				new ProjectSettingsFrame().displayFrame(p);
 			}
 		});
 		nameLabel.addMouseListener(new MouseListener() {

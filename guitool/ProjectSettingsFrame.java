@@ -22,42 +22,45 @@ import inventory.main.Fonts;
 import inventory.main.Project;
 
 public class ProjectSettingsFrame extends JFrame {
-	static JPanel rightPanel = new JPanel();
-	static JPanel currentPanel = null;
-	static SettingsMenuEntry current = null;
-	static SettingsMenuEntry generalSettingsEntry = new SettingsMenuEntry("General", new Point(0, 4),
-			new SettingsMenuCallable() {
-				@Override
-				public void onClick(SettingsMenuEntry e) {
-					deselect(current);
-					setSelected(e);
-					System.out.println("General - clicked");
-				}
-			});
+	JPanel rightPanel = new JPanel();
+	JPanel currentPanel = null;
+	SettingsMenuEntry current = null;
+	JFrame frame = new JFrame();
+	Project p = null;
 
-	static SettingsMenuEntry tagsSettingsEntry = new SettingsMenuEntry("Tags", new Point(0, 28),
-			new SettingsMenuCallable() {
+	public void displayFrame(Project p) {
+		this.p = p;
+		SettingsMenuEntry generalSettingsEntry = new SettingsMenuEntry("General", new Point(0, 4), p, this,
+				new SettingsMenuCallable() {
+					@Override
+					public void onClick(SettingsMenuEntry e) {
+						deselect(current);
+						setSelected(e);
+						System.out.println("General - clicked");
+					}
+				});
 
-				@Override
-				public void onClick(SettingsMenuEntry e) {
-					deselect(current);
-					setSelected(e);
-					System.out.println("Tags - clicked");
-				}
-			});
-	static SettingsMenuEntry advancedSettingsEntry = new SettingsMenuEntry("Advanced", new Point(0, 52),
-			new SettingsMenuCallable() {
+		SettingsMenuEntry tagsSettingsEntry = new SettingsMenuEntry("Tags", new Point(0, 28), p, this,
+				new SettingsMenuCallable() {
 
-				@Override
-				public void onClick(SettingsMenuEntry e) {
-					deselect(current);
-					setSelected(e);
-					System.out.println("Advanced - clicked");
-				}
-			});
+					@Override
+					public void onClick(SettingsMenuEntry e) {
+						deselect(current);
+						setSelected(e);
+						System.out.println("Tags - clicked");
+					}
+				});
+		SettingsMenuEntry advancedSettingsEntry = new SettingsMenuEntry("Advanced", new Point(0, 52), p, this,
+				new SettingsMenuCallable() {
 
-	public static void displayFrame(Project p) {
-		JFrame frame = new JFrame();
+					@Override
+					public void onClick(SettingsMenuEntry e) {
+						deselect(current);
+						setSelected(e);
+						System.out.println("Advanced - clicked");
+					}
+				});
+
 		frame.setVisible(true);
 		frame.setLocationRelativeTo(null);
 		frame.setSize(850, 800);
@@ -84,7 +87,7 @@ public class ProjectSettingsFrame extends JFrame {
 		leftPanel.add(tagsSettingsEntry);
 		leftPanel.add(advancedSettingsEntry);
 
-		setSelected(generalSettingsEntry);
+	
 		rightPanel.setLayout(new BorderLayout());
 
 		frame.addWindowListener(new WindowAdapter() {
@@ -92,10 +95,10 @@ public class ProjectSettingsFrame extends JFrame {
 				resetAll();
 			}
 		});
-
+		setSelected(generalSettingsEntry);
 	}
-
-	public static void refreshPage() {
+	
+	public void refreshPage() {
 		if (current != null && current.getPanel() != null) {
 			rightPanel.add(current.getPanel(), BorderLayout.CENTER);
 			rightPanel.repaint();
@@ -109,17 +112,20 @@ public class ProjectSettingsFrame extends JFrame {
 			rightPanel.repaint();
 
 		}
-
+		frame.setTitle("Project Settings - " + p.getName());
+	}
+	public void refreshTitle() {
+		frame.setTitle("Project Settings - " + p.getName());
 	}
 
-	public static void setSelected(SettingsMenuEntry e) {
+	public void setSelected(SettingsMenuEntry e) {
 		e.setSelected(true);
 		currentPanel = e.getPanel();
 		current = e;
 		refreshPage();
 	}
 
-	public static void deselect(SettingsMenuEntry e) {
+	public void deselect(SettingsMenuEntry e) {
 		System.out.println("Des");
 		if (e != null) {
 			e.setSelected(false);

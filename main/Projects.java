@@ -132,7 +132,10 @@ public class Projects {
 		updatePanelUI();
 
 	}
-
+	public static void setProjectDesc(Project p, String desc) {
+		p.setDesc(desc);
+		saveAll();
+	}
 	public static Project getProject(String name) {
 		Project toReturn = null;
 		for (Project p : localProjectList) {
@@ -319,6 +322,16 @@ public class Projects {
 				INPRJHandler.writeData(projFile, p);
 			}
 		}
+	}
+
+	public static boolean validateProjName(String name) {
+		if ((!name.contains("\\")) && (!name.contains("/")) && (!name.contains(":")) && (!name.contains("*"))
+				&& (!name.contains("?")) && (!name.contains("\"")) && (!name.contains("<")) && (!name.contains(">"))
+				&& (!name.contains("|"))) {
+			return true;
+		}
+
+		return false;
 	}
 
 }

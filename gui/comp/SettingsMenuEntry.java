@@ -1,10 +1,14 @@
 package inventory.gui.comp;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Point;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.Random;
 
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
@@ -13,20 +17,29 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
+import inventory.guitool.ProjectSettingsFrame;
 import inventory.interfaces.SettingsMenuCallable;
 import inventory.main.Colors;
 import inventory.main.Fonts;
+import inventory.main.Project;
+import inventory.main.Projects;
+import inventory.main.util.TimeMonitor;
 
-public class SettingsMenuEntry extends JPanel{
-	static JPanel rightPanelSub = new JPanel(), general = new JPanel(), tags = new JPanel(), advanced = new JPanel();
+public class SettingsMenuEntry extends JPanel {
+	JPanel rightPanelSub = new JPanel(), general = new JPanel(), tags = new JPanel(), advanced = new JPanel();
 	JTextField label = new JTextField();
 	String name = null;
-	public SettingsMenuEntry(String title, Point loc, SettingsMenuCallable onClickCall) {
+	Project p = null;
+	ProjectSettingsFrame psf = null;
+
+	public SettingsMenuEntry(String title, Point loc, Project p, ProjectSettingsFrame psf,
+			SettingsMenuCallable onClickCall) {
 		this.setLocation(loc);
 		this.name = title;
-		
+		this.p = p;
+		this.psf = psf;
 		this.setLayout(new BorderLayout());
-		this.setSize(new Dimension(147,20));
+		this.setSize(new Dimension(147, 20));
 		this.add(label, BorderLayout.CENTER);
 		label.setText(title);
 		label.setFont(Fonts.getFont("OpenSans-regular", 13f));
@@ -35,10 +48,7 @@ public class SettingsMenuEntry extends JPanel{
 		label.setBorder(null);
 		label.setEditable(false);
 		label.setHorizontalAlignment(SwingConstants.CENTER);
-		
-		
-		
-		
+
 		SettingsMenuEntry sme = this;
 		label.addMouseListener(new MouseAdapter() {
 			public void mousePressed(MouseEvent arg0) {
@@ -46,21 +56,28 @@ public class SettingsMenuEntry extends JPanel{
 			}
 		});
 	}
+
 	public void setSelected(boolean selected) {
-		if(selected) {
+		if (selected) {
 			label.setBackground(new Colors().getColor("ButtonsMainSelected"));
 		} else {
 			label.setBackground(new Colors().getColor("ButtonsMain"));
 		}
 	}
+
 	public String getName() {
 		return name;
 	}
+
 	public JPanel getPanel() {
-		
+		// move all of this stuff into a new class. Make the main ProjectSettingsFrame
+		// class not static, and create an instance of the frame for every project. All
+		// of the below will be moved into a new class which will be instantiated in the
+		// ProjectSettingsFrame class -- this shouldn't take too long, just don't want
+		// to do it rn
 		general.setBackground(new Colors().getColor("BackGray"));
 		general.setLayout(new BorderLayout());
-		
+
 		JPanel subPanel = new JPanel();
 		general.add(subPanel, BorderLayout.CENTER);
 		// Borders:
@@ -105,10 +122,7 @@ public class SettingsMenuEntry extends JPanel{
 		refFilesPanel.setLayout(new BorderLayout());
 		multiImageDisplayPanel.setLayout(new BorderLayout());
 		// ************************************************************///
-		
 
-		
-		
 		left.setPreferredSize(new Dimension(25, 550));
 		right.setPreferredSize(new Dimension(25, 550));
 		top.setPreferredSize(new Dimension(650, 25));
@@ -142,7 +156,7 @@ public class SettingsMenuEntry extends JPanel{
 		topThird.add(projTitleField, BorderLayout.NORTH);
 		projTitleField.setPreferredSize(new Dimension(650, 70));
 		projTitleField.setBackground(new Colors().getColor("BackField"));
-		projTitleField.setFont(Fonts.getFont("CreteRound-Regular", 45f));
+		projTitleField.setFont(Fonts.getFont("CreteRound-Regular", 55f));
 		projTitleField.setForeground(new Colors().getColor("BlueGreenTextMain"));
 		projTitleField.setBorder(BorderFactory.createEtchedBorder());
 		projTitleField.setCaretColor(new Colors().getColor("InGreen"));
@@ -167,7 +181,7 @@ public class SettingsMenuEntry extends JPanel{
 		starredPanel.setBackground(new Colors().getColor("BackGray"));
 		linkedPanel.setBackground(new Colors().getColor("BackGray"));
 		JPanel midSpacer = new JPanel();
-		midSpacer.setPreferredSize(new Dimension(650,25));
+		midSpacer.setPreferredSize(new Dimension(650, 25));
 		midSpacer.setBackground(new Colors().getColor("BackGray"));
 		midThird.add(midSpacer, BorderLayout.NORTH);
 		midThird.add(descTextArea, BorderLayout.CENTER);
@@ -178,18 +192,17 @@ public class SettingsMenuEntry extends JPanel{
 		descTextArea.setLineWrap(true);
 		descTextArea.setWrapStyleWord(true);
 		descTextArea.setCaretColor(new Colors().getColor("InGreen"));
-		
-		
+
 		JLabel descLabel = new JLabel();
 		midSpacer.setLayout(null);
 		midSpacer.add(descLabel);
-	
-		descLabel.setLocation(0,2);
-		descLabel.setSize(new Dimension(120,20));
+
+		descLabel.setLocation(0, 2);
+		descLabel.setSize(new Dimension(120, 20));
 		descLabel.setText("Description:");
 		descLabel.setForeground(new Colors().getColor("InGreen"));
 		descLabel.setFont(Fonts.getFont("CreteRound-Regular", 15f));
-		
+
 		JLabel titleLabel = new JLabel();
 		titleLabel.setFont(Fonts.getFont("CreteRound-Regular", 15f));
 		titleLabel.setForeground(new Colors().getColor("InGreen"));
@@ -197,13 +210,113 @@ public class SettingsMenuEntry extends JPanel{
 		titleLabel.setText("Project Name:");
 		titleLabel.setLocation(25, 2);
 		top.setLayout(null);
+		// setup
+
 		///////////////////////////
-		
-		
-		
-		switch(name) {
-		case "General" : return rightPanelSub;
-		default : return null;
+		projTitleField.setToolTipText("Title cannot contain any of the following characters: /\\*:?><\"|");
+
+		projTitleField.addKeyListener(new KeyAdapter() {
+			String lastChange = p.getName();
+			volatile TimeMonitor monitor = new TimeMonitor();
+			boolean firstTime = true;
+
+			@Override
+			public void keyReleased(KeyEvent e) {
+				monitor.startTime();
+				if (firstTime) {
+					Thread titleFieldAutosave = new Thread(new Runnable() {
+						
+						public void run() {
+							while(true) {
+							if(monitor.getElapsedTimeMs() > 550) {
+							/////
+							boolean untitled = false;
+							if (Projects.validateProjName(projTitleField.getText())) {
+								if (projTitleField.getText().length() > 0) {
+									Projects.renProject(p, projTitleField.getText());
+								} else {
+									Projects.renProject(p, "untitled#" + new Random().nextInt());
+									untitled = true;
+								}
+								lastChange = projTitleField.getText();
+								psf.refreshTitle();
+
+							} else {
+								projTitleField.setText(lastChange);
+
+							}
+							projTitleField.requestFocus();
+							/////
+							firstTime = true;
+							return;
+							}
+							}
+						}
+					});
+					firstTime = false;
+					titleFieldAutosave.start();
+
+				}
+			}
+
+			
+		});
+		descTextArea.addKeyListener(new KeyAdapter() {
+			public void keyReleased(KeyEvent arg0) {
+				Projects.setProjectDesc(p, descTextArea.getText());
+			}
+		});
+
+		lowerThird.setBackground(Color.green);
+
+		///////////////////////////////////////////////////////////////////////////////// *********************************************************************
+		JPanel lowerDivider = new JPanel();
+		lowerDivider.setPreferredSize(new Dimension(0, 30));
+		lowerThird.add(lowerDivider, BorderLayout.NORTH);
+		lowerDivider.setBackground(new Colors().getColor("BackGray"));
+		JPanel lowerThirdMain = new JPanel();
+		lowerThirdMain.setLayout(new BorderLayout());
+		lowerThird.add(lowerThirdMain, BorderLayout.CENTER);
+		JPanel leftLower = new JPanel(), rightLower = new JPanel();
+		lowerThirdMain.setLayout(new BorderLayout());
+		lowerThirdMain.add(leftLower, BorderLayout.WEST);
+		lowerThirdMain.add(rightLower, BorderLayout.CENTER);
+
+		leftLower.setPreferredSize(new Dimension(400, 0));
+		leftLower.setBackground(Color.red);
+		leftLower.setLayout(new BorderLayout());
+		leftLower.add(tagsPanelMain, BorderLayout.WEST);
+		leftLower.add(refFilesPanel, BorderLayout.EAST);
+
+		JPanel leftLowerDivider = new JPanel();
+		JPanel rightLowerDivider = new JPanel();
+		rightLowerDivider.setPreferredSize(new Dimension(20, 0));
+		leftLower.add(leftLowerDivider, BorderLayout.CENTER);
+		tagsPanelMain.setPreferredSize(new Dimension(200, 0));
+		refFilesPanel.setPreferredSize(new Dimension(180, 0));
+
+		tagsPanelMain.setBorder(BorderFactory.createEtchedBorder());
+		refFilesPanel.setBorder(BorderFactory.createEtchedBorder());
+
+		leftLowerDivider.setBackground(new Colors().getColor("BackGray"));
+		tagsPanelMain.setBackground(new Colors().getColor("BackGray"));
+		refFilesPanel.setBackground(new Colors().getColor("BackGray"));
+		rightLower.setLayout(new BorderLayout());
+		rightLower.add(imagesMainPanel, BorderLayout.CENTER);
+		rightLower.add(rightLowerDivider, BorderLayout.WEST);
+		rightLowerDivider.setBackground(new Colors().getColor("BackGray"));
+		imagesMainPanel.setBackground(new Colors().getColor("BackGray"));
+		imagesMainPanel.setBorder(BorderFactory.createEtchedBorder());
+
+		switch (name) {
+		case "General": {
+			projTitleField.setText(p.getName());
+			descTextArea.setText(p.getDesc());
+
+			return rightPanelSub;
+		}
+		default:
+			return null;
 		}
 	}
 }

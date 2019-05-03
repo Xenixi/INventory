@@ -87,6 +87,9 @@ public class Project {
 		this.selected = selected;
 		ple.refresh();
 	}
+	public void setDesc(String desc) {
+		data.desc = desc;
+	}
 	public boolean isSelected() {
 		return selected;
 	}
