@@ -91,6 +91,7 @@ public class Projects {
 			saveAll();
 
 			updatePanelUI();
+			searchMode("");
 			return true;
 		} else {
 			for (Project p : cloudProjectList) {

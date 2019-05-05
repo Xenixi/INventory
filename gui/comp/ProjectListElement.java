@@ -42,7 +42,6 @@ public class ProjectListElement extends JPanel {
 		this.add(nameLabel, BorderLayout.WEST);
 		this.setBackground(new Colors().getColor("ButtonsMain"));
 		nameLabel.setSize(200, 17);
-		nameLabel.setForeground(Color.WHITE);
 		StringBuilder sb = new StringBuilder();
 		if (p.getTags().length > 0) {
 			sb.append("[");

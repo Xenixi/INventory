@@ -1,13 +1,11 @@
 package inventory.main;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.KeyEventDispatcher;
 import java.awt.KeyboardFocusManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
@@ -16,22 +14,18 @@ import java.awt.event.MouseListener;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
 import javax.swing.JFrame;
-import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
-
-import inventory.guitool.PromptFrame;
-import inventory.interfaces.INventoryCallable;
 
 public class INventoryGUI extends JFrame {
 	public INventoryGUI() {
 		start();
 	}
-
+	public void setSearchText(int search, String txt) {
+		
+	}
 	public void start() {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
@@ -221,10 +215,9 @@ public class INventoryGUI extends JFrame {
 				projectsSearchBufferPanel.setPreferredSize(new Dimension(10, 30));
 
 				searchProjectsField.setBorder(null);
-				searchProjectsField.setText("Search...");
 				searchProjectsField.setBackground(new Colors().getColor("BackField"));
-				searchProjectsField.setForeground(new Colors().getColor("lighttext"));
-				searchProjectsField.setFont(Fonts.getFont("OpenSans-lightitalic", 17f));
+				searchProjectsField.setForeground(new Colors().getColor("InGreen"));
+				searchProjectsField.setFont(Fonts.getFont("CreteRound-regular", 14f));
 
 				searchProjectsField.addMouseListener(new MouseListener() {
 					boolean isSelected = false;
@@ -300,8 +293,8 @@ public class INventoryGUI extends JFrame {
 					}
 
 				});
-				searchProjectsField.setCaretColor(new Colors().getColor("lighttext"));
-				searchBarField.setCaretColor(new Colors().getColor("lighttext"));
+				searchProjectsField.setCaretColor(new Colors().getColor("InGreen"));
+				searchBarField.setCaretColor(new Colors().getColor("InGreen"));
 				projectsContainerPanel.setLayout(new BorderLayout());
 				projectsContainerPanel.add(Projects.getProjectPanel(), BorderLayout.CENTER);
 				// Initialize Projects class
@@ -319,18 +312,14 @@ public class INventoryGUI extends JFrame {
 					
 					@Override
 					public void keyTyped(KeyEvent e) {
-						String text = searchProjectsField.getText();
-						if(!(text.equalsIgnoreCase("Search")) && !(text.equalsIgnoreCase(""))) {
-							Projects.searchMode(text);
-						} else {
-							//Projects.closeSearch();
-							Projects.searchMode(text);
-						}
+						
 					
 					}
 					
 					@Override
 					public void keyReleased(KeyEvent e) {
+						String text = searchProjectsField.getText();
+						Projects.searchMode(text);
 						
 					}
 					
