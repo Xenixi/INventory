@@ -12,6 +12,7 @@ import javax.swing.ImageIcon;
 
 import inventory.guitool.PromptFrame;
 import inventory.interfaces.INventoryCallable;
+import inventory.main.util.dev.DevConsole;
 
 public class ActionManager {
 	private static boolean enabled = false;
@@ -21,6 +22,9 @@ public class ActionManager {
 		public boolean dispatchKeyEvent(KeyEvent e) {
 			if(e.getID() == KeyEvent.KEY_PRESSED && e.getKeyCode() == KeyEvent.VK_ESCAPE) {
 				Projects.setSelected(null);
+			} else if(e.getID() == KeyEvent.KEY_PRESSED && e.getKeyCode() == KeyEvent.VK_D && e.isControlDown() && e.isShiftDown()) {
+				System.err.println("DevConsole");
+				DevConsole.displayConsole();
 			}
 			return false;
 		}

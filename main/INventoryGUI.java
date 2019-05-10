@@ -19,6 +19,8 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
+import inventory.main.util.dev.DevConsole;
+
 public class INventoryGUI extends JFrame {
 	public INventoryGUI() {
 		start();
@@ -328,7 +330,7 @@ public class INventoryGUI extends JFrame {
 						
 					}
 				});
-				
+				DevConsole.init();
 				KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(ActionManager.dispatcherMain);
 				
 				delButton.addActionListener(new ActionListener() {

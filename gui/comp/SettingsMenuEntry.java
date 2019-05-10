@@ -3,6 +3,7 @@ package inventory.gui.comp;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.GridLayout;
 import java.awt.Point;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -295,7 +296,7 @@ public class SettingsMenuEntry extends JPanel {
 		tagsPanelMain.setPreferredSize(new Dimension(200, 0));
 		refFilesPanel.setPreferredSize(new Dimension(180, 0));
 
-		tagsPanelMain.setBorder(BorderFactory.createEtchedBorder());
+		tagsPanelMain.setBorder(null);
 		refFilesPanel.setBorder(BorderFactory.createEtchedBorder());
 
 		leftLowerDivider.setBackground(new Colors().getColor("BackGray"));
@@ -307,12 +308,45 @@ public class SettingsMenuEntry extends JPanel {
 		rightLowerDivider.setBackground(new Colors().getColor("BackGray"));
 		imagesMainPanel.setBackground(new Colors().getColor("BackGray"));
 		imagesMainPanel.setBorder(BorderFactory.createEtchedBorder());
-
+		
+		JPanel lowerTagsPanel = new JPanel(), midTagsPanel = new JPanel(), topTagsPanel = new JPanel();
+		tagsPanelMain.setLayout(new BorderLayout());
+		tagsPanelMain.add(lowerTagsPanel, BorderLayout.SOUTH);
+		tagsPanelMain.add(topTagsPanel, BorderLayout.NORTH);
+		tagsPanelMain.add(midTagsPanel, BorderLayout.CENTER);
+		
+		topTagsPanel.setPreferredSize(new Dimension(200, 25));
+		midTagsPanel.setBackground(new Colors().getColor("BackGray"));
+		midTagsPanel.setBorder(null);
+		lowerTagsPanel.setPreferredSize(new Dimension(200, 188));
+		topTagsPanel.setBorder(null);
+		lowerTagsPanel.setBorder(BorderFactory.createEtchedBorder());
+		topTagsPanel.setBackground(new Colors().getColor("BackGray"));
+		lowerTagsPanel.setBackground(new Colors().getColor("BackGray"));
+		lowerTagsPanel.setLayout(new GridLayout());
+		topTagsPanel.setLayout(new BorderLayout());
+		
+		JPanel topTagsSubpanelLeft = new JPanel(), topTagsSubpanelRight = new JPanel();
+		topTagsPanel.add(topTagsSubpanelLeft, BorderLayout.WEST);
+		topTagsPanel.add(topTagsSubpanelRight, BorderLayout.EAST);
+		JPanel topTagsPanelDivider = new JPanel();
+		topTagsPanel.add(topTagsPanelDivider, BorderLayout.CENTER);
+		
+		topTagsPanelDivider.setBorder(null);
+		topTagsPanelDivider.setBackground(new Colors().getColor("BackGray"));
+		topTagsSubpanelLeft.setPreferredSize(new Dimension(45, 0));
+		topTagsSubpanelRight.setPreferredSize(new Dimension(150, 0));
+		
+		topTagsSubpanelLeft.setBorder(BorderFactory.createEtchedBorder());
+		topTagsSubpanelRight.setBorder(BorderFactory.createEtchedBorder());
+		topTagsSubpanelLeft.setBackground(new Colors().getColor("BackGray"));
+		topTagsSubpanelRight.setBackground(new Colors().getColor("BackGray"));
+		//****//
 		switch (name) {
 		case "General": {
 			projTitleField.setText(p.getName());
 			descTextArea.setText(p.getDesc());
-
+			
 			return rightPanelSub;
 		}
 		default:
