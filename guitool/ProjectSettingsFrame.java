@@ -9,17 +9,13 @@ import java.awt.event.WindowEvent;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import javax.swing.SwingConstants;
 
 import inventory.gui.comp.SettingsMenuEntry;
 import inventory.interfaces.SettingsMenuCallable;
 import inventory.main.Colors;
-import inventory.main.Fonts;
 import inventory.main.Project;
+import inventory.main.util.dev.DevConsole;
 
 public class ProjectSettingsFrame extends JFrame {
 	JPanel rightPanel = new JPanel();
@@ -36,7 +32,7 @@ public class ProjectSettingsFrame extends JFrame {
 					public void onClick(SettingsMenuEntry e) {
 						deselect(current);
 						setSelected(e);
-						System.out.println("General - clicked");
+						DevConsole.printOut("General - clicked");
 					}
 				});
 
@@ -47,7 +43,7 @@ public class ProjectSettingsFrame extends JFrame {
 					public void onClick(SettingsMenuEntry e) {
 						deselect(current);
 						setSelected(e);
-						System.out.println("Tags - clicked");
+						DevConsole.printOut("Tags - clicked");
 					}
 				});
 		SettingsMenuEntry advancedSettingsEntry = new SettingsMenuEntry("Advanced", new Point(0, 52), p, this,
@@ -57,7 +53,7 @@ public class ProjectSettingsFrame extends JFrame {
 					public void onClick(SettingsMenuEntry e) {
 						deselect(current);
 						setSelected(e);
-						System.out.println("Advanced - clicked");
+						DevConsole.printOut("Advanced - clicked");
 					}
 				});
 
@@ -104,7 +100,7 @@ public class ProjectSettingsFrame extends JFrame {
 			rightPanel.repaint();
 
 		} else {
-			System.out.println("Fallback");
+			DevConsole.printOut("Fallback");
 			if (currentPanel != null) {
 				rightPanel.remove(currentPanel);
 			}
@@ -126,7 +122,7 @@ public class ProjectSettingsFrame extends JFrame {
 	}
 
 	public void deselect(SettingsMenuEntry e) {
-		System.out.println("Des");
+		DevConsole.printOut("Des");
 		if (e != null) {
 			e.setSelected(false);
 			current = null;

@@ -8,7 +8,6 @@ import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.util.LinkedHashMap;
 import java.util.Map.Entry;
 
@@ -26,6 +25,7 @@ import javax.swing.text.StyleConstants;
 import inventory.interfaces.INventoryCallable;
 import inventory.main.Colors;
 import inventory.main.Fonts;
+import inventory.main.util.dev.DevConsole;
 
 public class PromptFrame extends JFrame {
 	private String[] toReturn;
@@ -156,7 +156,7 @@ public class PromptFrame extends JFrame {
 	}
 
 	private void exit() {
-		System.out.println("Exiting Prompt...");
+		DevConsole.printOut("Exiting Prompt...");
 		reset();
 		repaint();
 	}

@@ -13,13 +13,15 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 
+import inventory.main.util.dev.DevConsole;
+
 public class GUI extends JFrame {
 	public GUI() {
 		beginGUI();
 	}
 
 	public void beginGUI() {
-		System.out.println("GUI staring");
+		DevConsole.printOut("GUI staring");
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 
@@ -120,7 +122,7 @@ public class GUI extends JFrame {
 							ConfigEdit.setValue("Organization", compField.getText());
 							menuFrame.setVisible(false);
 							menuFrame.dispose();
-							System.out.println("First time setup completed!");
+							DevConsole.printOut("First time setup completed!");
 							ConfigEdit.setValue("FirstTime", "False");
 							//
 							// call a different method with the main GUI
@@ -131,7 +133,7 @@ public class GUI extends JFrame {
 						}
 					});
 				} else {
-					System.out.println("FALSE NOT OPENING");
+					DevConsole.printOut("FALSE NOT OPENING");
 					//
 					// call a different method with the main GUI
 					new INventoryGUI();

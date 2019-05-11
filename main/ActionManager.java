@@ -46,7 +46,7 @@ public class ActionManager {
 						}
 
 						public void cancelFallback() {
-							System.out.println("Operation canceled");
+							DevConsole.printOut("Operation canceled");
 						}
 					});
 

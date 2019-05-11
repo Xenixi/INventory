@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
 
+import inventory.main.util.dev.DevConsole;
+
 public class ConfigEdit {
 	private static boolean init = false;
 
@@ -26,9 +28,9 @@ public class ConfigEdit {
 
 		if (!datFile.exists()) {
 			try {
-				System.out.println("Data file not found -- Creating File...");
+				DevConsole.printOut("Data file not found -- Creating File...");
 				datFile.createNewFile();
-				System.out.println("File created succesfully...");
+				DevConsole.printOut("File created succesfully...");
 
 			} catch (IOException e) {
 				System.err.println("Failed to create data file - Exiting...");

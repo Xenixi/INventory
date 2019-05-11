@@ -330,7 +330,7 @@ public class INventoryGUI extends JFrame {
 						
 					}
 				});
-				DevConsole.init();
+				
 				KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(ActionManager.dispatcherMain);
 				
 				delButton.addActionListener(new ActionListener() {

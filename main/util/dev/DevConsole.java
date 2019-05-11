@@ -21,7 +21,9 @@ public class DevConsole extends JFrame{
 	static final JTextArea devTextArea = new JTextArea();
 	static final JTextField consoleEnterField = new JTextField();
 	static final JScrollPane scroll = new JScrollPane(devTextArea);
+	static DevConsoleBackend backend = new DevConsoleBackend();
 	public static void init() {
+		devTextArea.setText("");
 		devConFrame.setSize(450,600);
 		devConFrame.setTitle("Developer Console (CTRL+SHIFT+D)");
 		devConFrame.setLocationRelativeTo(null);
@@ -36,15 +38,15 @@ public class DevConsole extends JFrame{
 		devConFrame.setDefaultCloseOperation(HIDE_ON_CLOSE);
 		devTextArea.setBackground(new Colors().getColor("BackGray"));
 		consoleEnterField.setBackground(new Colors().getColor("ButtonsMain"));
-		consoleEnterField.setForeground(new Colors().getColor("InGreen"));
+		consoleEnterField.setForeground(new Colors().getColor("BlueGreenTextMain"));
 		consoleEnterField.setBorder(null);
-		consoleEnterField.setFont(Fonts.getFont("CreteRound-Regular", 15f));
+		consoleEnterField.setFont(Fonts.getFont("CreteRound-Regular", 14f));
 		devTextArea.setForeground(new Colors().getColor("BlueGreenTextMain"));
 		devTextArea.setWrapStyleWord(true);
 		devTextArea.setLineWrap(true);
 		devTextArea.setFont(Fonts.getFont("CreteRound-Regular", 13f));
 		devTextArea.setEditable(false);
-		
+		consoleEnterField.setCaretColor(new Colors().getColor("BlueGreenTextMain"));
 		consoleEnterField.addKeyListener(new KeyListener() {
 			
 			@Override
@@ -57,7 +59,7 @@ public class DevConsole extends JFrame{
 				if(e.getKeyCode() == KeyEvent.VK_ENTER) {
 					String cmd = consoleEnterField.getText();
 					consoleEnterField.setText("");
-					appendLine("CMD: " + cmd, false);
+					execute(cmd);
 				}
 			}
 			
@@ -66,13 +68,15 @@ public class DevConsole extends JFrame{
 				
 			}
 		});
-		appendLine("DevConsole V1.0.0: Enter Command:", true);
+		appendLine(" INventory DevConsole V1.0.0:", true);
+		appendLine(" *--------------------------------------------*", false);
 	}
 	public static void displayConsole() {
 		if(devConFrame.isVisible()) {
 			devConFrame.setVisible(false);
 		} else {
 		devConFrame.setVisible(true);
+		consoleEnterField.requestFocus();
 		}
 	
 		
@@ -84,6 +88,33 @@ public class DevConsole extends JFrame{
 		devTextArea.setText(sb.toString());
 	}
 	public static void printOut(String debug) {
+		appendLine(" " + debug, false);
+	}
+	private static void execute(String cmd) {
+		if(cmd.startsWith("^")) {
+			appendLine("               " + cmd, false);
+			return;
+		}
 		
+		appendLine("    #" + cmd, false);
+		if(!cmd.contains(":")) {
+			appendLine(" !-Invalid Command Syntax!", false);
+			appendLine(" Make sure you add ':' after every command!", false);
+			return;
+		}
+		String cmdToCheck = cmd.split(":")[0];
+		String cmdArgs = (cmd.split(":").length > 1) ? (cmd.split(":")[1]) : "";
+		if(!backend.checkCMD(cmdToCheck)) {
+			appendLine(" !-Command Not Recognized.", false);
+		} else {
+			backend.getCMD(cmdToCheck).runCMD(cmdArgs.split(" "));
+		}
+	
+		
+	}
+	public static void clear() {
+		devTextArea.setText("");
+		appendLine(" INventory DevConsole V1.0.0:", true);
+		appendLine(" *--------------------------------------------*", false);
 	}
 }

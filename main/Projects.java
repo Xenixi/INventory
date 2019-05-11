@@ -12,6 +12,7 @@ import javax.swing.JScrollPane;
 
 import inventory.guitool.PromptFrame;
 import inventory.interfaces.INventoryCallable;
+import inventory.main.util.dev.DevConsole;
 
 public class Projects {
 	public static final int LOCAL = 0;
@@ -107,7 +108,7 @@ public class Projects {
 	}
 
 	public static void delProject(Project... proj) {
-		System.out.println("Deleteing project: '" + (proj[0].getName() + ((proj.length > 1) ? "' -- etc." : "'")));
+		DevConsole.printOut("Deleteing project: '" + (proj[0].getName() + ((proj.length > 1) ? "' -- etc." : "'")));
 		for (Project p : proj) {
 			for (File f : localProjectsFolder.listFiles()) {
 				if (new Project(INPRJHandler.readData(f)).equals(p)) {
@@ -267,7 +268,7 @@ public class Projects {
 								Project[] ps = new Project[currentlySelected.size()];
 								int i = 0;
 								for (Project p : currentlySelected) {
-									System.out.println("Selected:");
+									DevConsole.printOut("Selected:");
 									System.out.println(p);
 									ps[i] = p;
 									i++;

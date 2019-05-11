@@ -1,20 +1,14 @@
 package inventory.main;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Scanner;
+import inventory.main.util.dev.DevConsole;
 
 public class Start {
 	public static void main(String[] args) {
-
+		DevConsole.init();
 		ConfigEdit.checkFile();
 
-		System.out.println("Starting INventory Manager");
-		System.out.println("Checking args...");
+		DevConsole.printOut("Starting INventory Manager");
+		DevConsole.printOut("Checking args...");
 		if (args.length > 0) {
 			// for custom integration
 			String mode = args[0];
@@ -27,19 +21,19 @@ public class Start {
 				switch (mode) {
 
 				case "input": {
-					System.out.println("Headless Input");
+					DevConsole.printOut("Headless Input");
 					// enter headless input code here - once ready
 
 					break;
 				}
 				case "output": {
-					System.out.println("Headless Output");
+					DevConsole.printOut("Headless Output");
 					// enter headless output code here - once ready
 
 					break;
 				}
 				default: {
-					System.out.println("Invalid Mode - Must be 'input' or 'output' for headless input/output");
+					DevConsole.printOut("Invalid Mode - Must be 'input' or 'output' for headless input/output");
 
 					break;
 				}
@@ -47,7 +41,7 @@ public class Start {
 				}
 
 			} else {
-				System.out.println("Please enter full arguments: <mode> <action> <value> <enter>");
+				DevConsole.printOut("Please enter full arguments: <mode> <action> <value> <enter>");
 			}
 		} else {
 			GUI gui = new GUI();
