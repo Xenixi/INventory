@@ -36,17 +36,8 @@ public class ProjectSettingsFrame extends JFrame {
 					}
 				});
 
-		SettingsMenuEntry tagsSettingsEntry = new SettingsMenuEntry("Tags", new Point(0, 28), p, this,
-				new SettingsMenuCallable() {
-
-					@Override
-					public void onClick(SettingsMenuEntry e) {
-						deselect(current);
-						setSelected(e);
-						DevConsole.printOut("Tags - clicked");
-					}
-				});
-		SettingsMenuEntry advancedSettingsEntry = new SettingsMenuEntry("Advanced", new Point(0, 52), p, this,
+		
+		SettingsMenuEntry advancedSettingsEntry = new SettingsMenuEntry("Advanced", new Point(0, 28), p, this,
 				new SettingsMenuCallable() {
 
 					@Override
@@ -60,7 +51,7 @@ public class ProjectSettingsFrame extends JFrame {
 		frame.setVisible(true);
 		frame.setLocationRelativeTo(null);
 		frame.setSize(850, 800);
-		frame.setIconImage(new ImageIcon("logo.png").getImage());
+		frame.setIconImage(new ImageIcon("gui/icon/projseti.png").getImage());
 		frame.setTitle("Project Settings - " + p.getName());
 		JPanel mainPanel = new JPanel();
 
@@ -80,7 +71,6 @@ public class ProjectSettingsFrame extends JFrame {
 		leftPanel.setLayout(null);
 
 		leftPanel.add(generalSettingsEntry);
-		leftPanel.add(tagsSettingsEntry);
 		leftPanel.add(advancedSettingsEntry);
 
 	

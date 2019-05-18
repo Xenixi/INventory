@@ -121,6 +121,7 @@ public class Project {
 		}
 		return false;
 	}
+	
 	//override
 	public boolean equals(Object o) {
 		if(((Project)o).getName().equalsIgnoreCase(this.getName())) {

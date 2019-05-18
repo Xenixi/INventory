@@ -335,5 +335,8 @@ public class Projects {
 
 		return false;
 	}
+	public static Project fromName(String name) {
+		return new Project(name, "", true, new String[] {});
+	}
 
 }

@@ -3,12 +3,16 @@ package inventory.main.util.dev;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import javax.print.attribute.standard.PDLOverrideSupported;
+
 import inventory.interfaces.DevConsoleRun;
+import inventory.main.Project;
 import inventory.main.Projects;
 
 public class DevConsoleBackend {
 	private HashMap<String, DevConsoleRun> cmdMap = new HashMap<>();
-
+	private boolean delConfirmActive = false;
+	private Project pending = null;
 	public DevConsoleBackend() {
 		cmdMap.put("project loop add", new DevConsoleRun() {
 
@@ -84,7 +88,7 @@ public class DevConsoleBackend {
 
 			@Override
 			public void runCMD(String[] args) {
-				DevConsole.printOut("project modification args: loop, add, del*, ren* -- *not available yet");
+				DevConsole.printOut("project modification args: loop, add, del, ren");
 			}
 		});
 		cmdMap.put("project loop", new DevConsoleRun() {
@@ -118,6 +122,83 @@ public class DevConsoleBackend {
 				tagsSA = tags.toArray(tagsSA);
 				Projects.createProject(name, true, desc, tagsSA);
 				DevConsole.printOut("add: Created Project: '" + name + "'");
+			}
+		});
+		cmdMap.put("project del", new DevConsoleRun() {
+
+			@Override
+			public void runCMD(String[] args) {
+				if(delConfirmActive) {
+					DevConsole.printOut("Request still in progress...");
+					return;
+				}
+				if (args.length < 1 || args[0].equals("")) {
+					DevConsole.printOut("You must enter a project name!");
+					return;
+				}
+				if (Projects.exists(Projects.fromName(args[0]))) {
+					pending = Projects.getProject(args[0]);
+					DevConsole.printOut("Confirm with pdelconfirm within 10 seconds:");
+					delConfirmActive = true;
+					Thread t1 = new Thread(new Runnable() {
+
+						@Override
+						public void run() {
+							DevConsole.printOut("Time Remaining:");
+							for (int i = 0; i < 10 && delConfirmActive; i++) {
+								try {
+									DevConsole.printOut("t: " + (10-(i)));
+									Thread.sleep(1000);
+									
+								} catch (InterruptedException e) {
+									DevConsole.printOut("Failed to initiate sequence");
+
+								}
+							}
+							if(delConfirmActive) {
+							DevConsole.printOut("Deletion request timed out.");
+							delConfirmActive = false;
+							}
+						}
+					});
+					t1.start();
+				} else {
+					DevConsole.printOut("Specified project does not exist! It's quite hard to delete nothing, you know");
+				}
+
+			}
+		});
+		cmdMap.put("pdelconfirm", new DevConsoleRun() {
+
+			@Override
+			public void runCMD(String[] args) {
+				if(delConfirmActive && pending != null) {
+					Projects.delProject(pending);
+					
+					DevConsole.printOut("Project '" + pending.getName() + "' deleted sucessfully");
+					pending = null;
+					delConfirmActive = false;
+				} else {
+					DevConsole.printOut("Either no project has been requested for deletion, or the request timed out. Please try again.");
+				}
+				
+			}
+		});
+		cmdMap.put("project ren", new DevConsoleRun() {
+			
+			@Override
+			public void runCMD(String[] args) {
+				if (args.length < 2  || args[0].equals("") || args[1].equals("")) {
+					DevConsole.printOut("You must enter a project name and new name!");
+					return;
+				}
+				if (Projects.exists(Projects.fromName(args[0]))) {
+					Projects.renProject(Projects.getProject(args[0]), args[1]);
+					DevConsole.printOut("Project '" + args[0] + "' sucessfully renamed to '" + args[1] + "'");
+					
+				} else {
+					DevConsole.printOut("Cannot rename project '" + args[0] + "' -fyi a project must first actually exist to be renamed.");
+				}
 			}
 		});
 	}

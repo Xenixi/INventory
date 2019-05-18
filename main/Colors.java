@@ -10,6 +10,7 @@ public class Colors {
 		values.put("InGreen", new Color(10, 255, 10));
 		values.put("BackGray", new Color(30,  29, 27));
 		values.put("BackField", new Color(57, 57, 54));
+		values.put("BackFieldDark", new Color(44,44,42));
 		values.put("BackFieldSelected", new Color(63,63,63));
 		values.put("BackGrayToneUp", new Color(45,45,45));
 		values.put("Border", new Color(10, 10, 10));

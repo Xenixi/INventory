@@ -14,9 +14,14 @@ import java.util.Random;
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
+import javax.swing.UIManager;
+import javax.swing.plaf.ColorUIResource;
+import javax.swing.plaf.basic.BasicScrollBarUI;
 
 import inventory.guitool.ProjectSettingsFrame;
 import inventory.interfaces.SettingsMenuCallable;
@@ -91,6 +96,23 @@ public class SettingsMenuEntry extends JPanel {
 		//
 		// mid third:
 		JTextArea descTextArea = new JTextArea();
+		JScrollPane descScroll = new JScrollPane(descTextArea);
+		UIManager.put("ScrollBar.track", new ColorUIResource(new Colors().getColor("BackGray")));
+		UIManager.put("ScrollBar.trackHighlight", new ColorUIResource(new Colors().getColor("BackGray")));
+		UIManager.put("ScrollBar.thumb", new ColorUIResource(new Colors().getColor("BackField")));
+		UIManager.put("ScrollBar.thumbHighlight", new ColorUIResource(new Colors().getColor("BackFieldSelected")));
+		UIManager.put("ScrollBar.thumbShadow", new ColorUIResource(new Colors().getColor("BackGrayToneUp")));
+		UIManager.put("ScrollBar.thumbDarkShadow", new ColorUIResource(new Colors().getColor("BackGray")));
+		UIManager.put("ScrollBar.foreground", new ColorUIResource(new Colors().getColor("BackGray")));
+		//UIManager.put("ScrollBar.background", new ColorUIResource(Color.black));
+		descScroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+		descScroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		descScroll.setBorder(BorderFactory.createEtchedBorder());
+		descScroll.setBackground(new Colors().getColor("BackGray"));
+		descScroll.setForeground(new Colors().getColor("BackGray"));
+		descScroll.getVerticalScrollBar().setUI(new BasicScrollBarUI());
+		
+		
 		//
 		// lower third:
 		// main subpanels
@@ -156,7 +178,7 @@ public class SettingsMenuEntry extends JPanel {
 		JPanel topThirdBottomPanelParent = new JPanel();
 		topThird.add(projTitleField, BorderLayout.NORTH);
 		projTitleField.setPreferredSize(new Dimension(650, 70));
-		projTitleField.setBackground(new Colors().getColor("BackField"));
+		projTitleField.setBackground(new Colors().getColor("BackFieldDark"));
 		projTitleField.setFont(Fonts.getFont("CreteRound-Regular", 55f));
 		projTitleField.setForeground(new Colors().getColor("BlueGreenTextMain"));
 		projTitleField.setBorder(BorderFactory.createEtchedBorder());
@@ -185,9 +207,11 @@ public class SettingsMenuEntry extends JPanel {
 		midSpacer.setPreferredSize(new Dimension(650, 25));
 		midSpacer.setBackground(new Colors().getColor("BackGray"));
 		midThird.add(midSpacer, BorderLayout.NORTH);
-		midThird.add(descTextArea, BorderLayout.CENTER);
-		descTextArea.setBorder(BorderFactory.createEtchedBorder());
-		descTextArea.setBackground(new Colors().getColor("BackField"));
+		midThird.add(descScroll, BorderLayout.CENTER);
+		
+		
+		
+		descTextArea.setBackground(new Colors().getColor("BackFieldDark"));
 		descTextArea.setForeground(new Colors().getColor("BlueGreenTextMain"));
 		descTextArea.setFont(Fonts.getFont("CreteRound-Regular", 15f));
 		descTextArea.setLineWrap(true);
@@ -341,7 +365,25 @@ public class SettingsMenuEntry extends JPanel {
 		topTagsSubpanelRight.setBorder(BorderFactory.createEtchedBorder());
 		topTagsSubpanelLeft.setBackground(new Colors().getColor("BackGray"));
 		topTagsSubpanelRight.setBackground(new Colors().getColor("BackGray"));
+		tagsPanelMain.setBorder(BorderFactory.createEtchedBorder());
+		tagsPanelMain.setLayout(null);
+		//for test only - though ints and system here could be used for final
+		int row = 0;
+		int num = 0;
+		for(int i = 0; i < 18; i++) {
+			TagMiniPanel tmp = new TagMiniPanel("Test" + i);
+			tmp.setLocation((num * 45) + 15*(num+1), row*20 + 10*(row+1));
+			if(num < 2) {
+				num++;
+			} else {
+				num = 0;
+				row++;
+			}
+			tagsPanelMain.add(tmp);
+		}
+		
 		//****//
+		
 		switch (name) {
 		case "General": {
 			projTitleField.setText(p.getName());

@@ -12,12 +12,14 @@ import javax.swing.ImageIcon;
 
 import inventory.guitool.PromptFrame;
 import inventory.interfaces.INventoryCallable;
+import inventory.main.util.TimeMonitor;
 import inventory.main.util.dev.DevConsole;
 
 public class ActionManager {
 	private static boolean enabled = false;
 	static KeyEventDispatcher dispatcherMain = new KeyEventDispatcher() {
-		
+		TimeMonitor timer = new TimeMonitor();
+		boolean exitCall = false;
 		@Override
 		public boolean dispatchKeyEvent(KeyEvent e) {
 			if(e.getID() == KeyEvent.KEY_PRESSED && e.getKeyCode() == KeyEvent.VK_ESCAPE) {
@@ -25,7 +27,17 @@ public class ActionManager {
 			} else if(e.getID() == KeyEvent.KEY_PRESSED && e.getKeyCode() == KeyEvent.VK_D && e.isControlDown() && e.isShiftDown()) {
 				System.err.println("DevConsole");
 				DevConsole.displayConsole();
-			}
+			} else if(e.getID() == KeyEvent.KEY_PRESSED && e.getKeyCode() == KeyEvent.VK_X && e.isControlDown() && e.isShiftDown()) {
+				if(!exitCall) {
+					exitCall = true;
+					timer.startTime();
+				} else if(timer.getElapsedTimeMs() <= 250) {
+					System.exit(0);
+				} else {
+					exitCall = false;
+				}
+				
+				}
 			return false;
 		}
 	};

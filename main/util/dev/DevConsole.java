@@ -86,6 +86,7 @@ public class DevConsole extends JFrame{
 		sb.append(devTextArea.getText());
 		sb.append((sameLine ? "" : "\n") + line);
 		devTextArea.setText(sb.toString());
+		devTextArea.setCaretPosition(devTextArea.getDocument().getLength());
 	}
 	public static void printOut(String debug) {
 		appendLine(" " + debug, false);
