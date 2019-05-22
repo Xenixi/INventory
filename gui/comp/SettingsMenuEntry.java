@@ -104,15 +104,14 @@ public class SettingsMenuEntry extends JPanel {
 		UIManager.put("ScrollBar.thumbShadow", new ColorUIResource(new Colors().getColor("BackGrayToneUp")));
 		UIManager.put("ScrollBar.thumbDarkShadow", new ColorUIResource(new Colors().getColor("BackGray")));
 		UIManager.put("ScrollBar.foreground", new ColorUIResource(new Colors().getColor("BackGray")));
-		//UIManager.put("ScrollBar.background", new ColorUIResource(Color.black));
+		// UIManager.put("ScrollBar.background", new ColorUIResource(Color.black));
 		descScroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
 		descScroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		descScroll.setBorder(BorderFactory.createEtchedBorder());
 		descScroll.setBackground(new Colors().getColor("BackGray"));
 		descScroll.setForeground(new Colors().getColor("BackGray"));
 		descScroll.getVerticalScrollBar().setUI(new BasicScrollBarUI());
-		
-		
+
 		//
 		// lower third:
 		// main subpanels
@@ -208,9 +207,7 @@ public class SettingsMenuEntry extends JPanel {
 		midSpacer.setBackground(new Colors().getColor("BackGray"));
 		midThird.add(midSpacer, BorderLayout.NORTH);
 		midThird.add(descScroll, BorderLayout.CENTER);
-		
-		
-		
+
 		descTextArea.setBackground(new Colors().getColor("BackFieldDark"));
 		descTextArea.setForeground(new Colors().getColor("BlueGreenTextMain"));
 		descTextArea.setFont(Fonts.getFont("CreteRound-Regular", 15f));
@@ -250,31 +247,31 @@ public class SettingsMenuEntry extends JPanel {
 				monitor.startTime();
 				if (firstTime) {
 					Thread titleFieldAutosave = new Thread(new Runnable() {
-						
+
 						public void run() {
-							while(true) {
-							if(monitor.getElapsedTimeMs() > 550) {
-							/////
-							boolean untitled = false;
-							if (Projects.validateProjName(projTitleField.getText())) {
-								if (projTitleField.getText().length() > 0) {
-									Projects.renProject(p, projTitleField.getText());
-								} else {
-									Projects.renProject(p, "untitled#" + new Random().nextInt());
-									untitled = true;
+							while (true) {
+								if (monitor.getElapsedTimeMs() > 550) {
+									/////
+									boolean untitled = false;
+									if (Projects.validateProjName(projTitleField.getText())) {
+										if (projTitleField.getText().length() > 0) {
+											Projects.renProject(p, projTitleField.getText());
+										} else {
+											Projects.renProject(p, "untitled#" + new Random().nextInt());
+											untitled = true;
+										}
+										lastChange = projTitleField.getText();
+										psf.refreshTitle();
+
+									} else {
+										projTitleField.setText(lastChange);
+
+									}
+									projTitleField.requestFocus();
+									/////
+									firstTime = true;
+									return;
 								}
-								lastChange = projTitleField.getText();
-								psf.refreshTitle();
-
-							} else {
-								projTitleField.setText(lastChange);
-
-							}
-							projTitleField.requestFocus();
-							/////
-							firstTime = true;
-							return;
-							}
 							}
 						}
 					});
@@ -284,7 +281,6 @@ public class SettingsMenuEntry extends JPanel {
 				}
 			}
 
-			
 		});
 		descTextArea.addKeyListener(new KeyAdapter() {
 			public void keyReleased(KeyEvent arg0) {
@@ -332,63 +328,74 @@ public class SettingsMenuEntry extends JPanel {
 		rightLowerDivider.setBackground(new Colors().getColor("BackGray"));
 		imagesMainPanel.setBackground(new Colors().getColor("BackGray"));
 		imagesMainPanel.setBorder(BorderFactory.createEtchedBorder());
-		
+
 		JPanel lowerTagsPanel = new JPanel(), midTagsPanel = new JPanel(), topTagsPanel = new JPanel();
+		JScrollPane tagsScroll = new JScrollPane(lowerTagsPanel);
+
+		tagsScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+		tagsScroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		tagsScroll.setBackground(new Colors().getColor("BackGray"));
+		tagsScroll.setBorder(BorderFactory.createEtchedBorder());
+		tagsScroll.setBackground(new Colors().getColor("BackGray"));
+		tagsScroll.setForeground(new Colors().getColor("BackGray"));
+		tagsScroll.getVerticalScrollBar().setUI(new BasicScrollBarUI());
 		tagsPanelMain.setLayout(new BorderLayout());
-		tagsPanelMain.add(lowerTagsPanel, BorderLayout.SOUTH);
+		tagsPanelMain.add(tagsScroll, BorderLayout.SOUTH);
 		tagsPanelMain.add(topTagsPanel, BorderLayout.NORTH);
 		tagsPanelMain.add(midTagsPanel, BorderLayout.CENTER);
-		
+
 		topTagsPanel.setPreferredSize(new Dimension(200, 25));
 		midTagsPanel.setBackground(new Colors().getColor("BackGray"));
 		midTagsPanel.setBorder(null);
 		lowerTagsPanel.setPreferredSize(new Dimension(200, 188));
 		topTagsPanel.setBorder(null);
-		lowerTagsPanel.setBorder(BorderFactory.createEtchedBorder());
 		topTagsPanel.setBackground(new Colors().getColor("BackGray"));
 		lowerTagsPanel.setBackground(new Colors().getColor("BackGray"));
-		lowerTagsPanel.setLayout(new GridLayout());
+
 		topTagsPanel.setLayout(new BorderLayout());
-		
+
 		JPanel topTagsSubpanelLeft = new JPanel(), topTagsSubpanelRight = new JPanel();
 		topTagsPanel.add(topTagsSubpanelLeft, BorderLayout.WEST);
 		topTagsPanel.add(topTagsSubpanelRight, BorderLayout.EAST);
 		JPanel topTagsPanelDivider = new JPanel();
 		topTagsPanel.add(topTagsPanelDivider, BorderLayout.CENTER);
-		
+
 		topTagsPanelDivider.setBorder(null);
 		topTagsPanelDivider.setBackground(new Colors().getColor("BackGray"));
 		topTagsSubpanelLeft.setPreferredSize(new Dimension(45, 0));
 		topTagsSubpanelRight.setPreferredSize(new Dimension(150, 0));
-		
+
 		topTagsSubpanelLeft.setBorder(BorderFactory.createEtchedBorder());
 		topTagsSubpanelRight.setBorder(BorderFactory.createEtchedBorder());
 		topTagsSubpanelLeft.setBackground(new Colors().getColor("BackGray"));
 		topTagsSubpanelRight.setBackground(new Colors().getColor("BackGray"));
-		tagsPanelMain.setBorder(BorderFactory.createEtchedBorder());
-		tagsPanelMain.setLayout(null);
-		//for test only - though ints and system here could be used for final
+		lowerTagsPanel.setLayout(null);
+		
+
+		// for test only - though ints and system here could be used for final
 		int row = 0;
 		int num = 0;
-		for(int i = 0; i < 18; i++) {
-			TagMiniPanel tmp = new TagMiniPanel("Test" + i);
-			tmp.setLocation((num * 45) + 15*(num+1), row*20 + 10*(row+1));
-			if(num < 2) {
+		for (int i = 0; i < 28; i++) {
+			TagMiniPanel tmp = new TagMiniPanel("Test" + i, new Color(new Random().nextInt(20) * 12,
+					new Random().nextInt(20) * 12, new Random().nextInt(20) * 12));
+			tmp.setLocation((num * 45) + 12 * (num + 1), row * 20 + 10 * (row + 1));
+			if (num < 2) {
 				num++;
 			} else {
 				num = 0;
 				row++;
 			}
-			tagsPanelMain.add(tmp);
+			lowerTagsPanel.setPreferredSize(new Dimension(200, lowerTagsPanel.getPreferredSize().height + 30));
+			lowerTagsPanel.add(tmp);
 		}
-		
-		//****//
-		
+
+		// ****//
+
 		switch (name) {
 		case "General": {
 			projTitleField.setText(p.getName());
 			descTextArea.setText(p.getDesc());
-			
+
 			return rightPanelSub;
 		}
 		default:
