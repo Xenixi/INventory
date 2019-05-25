@@ -22,7 +22,16 @@ public class Project {
 		data.name = name;
 		data.desc = desc;
 		data.local = local;
-		data.tags = tags;
+		
+		ArrayList<String> tagsList = new ArrayList<>();
+
+		for(String tag: tags) {
+			if(!tagsList.contains(tag)) {
+				tagsList.add(tag);
+			}
+		}
+		data.tags = new String[tagsList.size()];
+		data.tags = tagsList.toArray(data.tags);
 		ple = new ProjectListElement(this);
 		linkedData = new File("Projects/" + data.name + ".inprj");
 		nameHistory.add(data.name);
@@ -120,6 +129,16 @@ public class Project {
 			}
 		}
 		return false;
+	}
+	public void addTag(String tag) {
+		ArrayList<String> tags = new ArrayList<>();
+		for(String tagOld: data.tags) {
+			tags.add(tagOld);
+		}
+		tags.add(tag);
+		String[] newTags = new String[tags.size()];
+		newTags = tags.toArray(newTags);
+		data.tags = newTags;
 	}
 	
 	//override

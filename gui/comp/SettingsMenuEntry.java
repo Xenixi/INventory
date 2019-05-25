@@ -3,15 +3,19 @@ package inventory.gui.comp;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.GridLayout;
 import java.awt.Point;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 import java.util.Random;
 
 import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -24,12 +28,15 @@ import javax.swing.plaf.ColorUIResource;
 import javax.swing.plaf.basic.BasicScrollBarUI;
 
 import inventory.guitool.ProjectSettingsFrame;
+import inventory.guitool.PromptFrame;
+import inventory.interfaces.INventoryCallable;
 import inventory.interfaces.SettingsMenuCallable;
 import inventory.main.Colors;
 import inventory.main.Fonts;
 import inventory.main.Project;
 import inventory.main.Projects;
 import inventory.main.util.TimeMonitor;
+import inventory.main.util.dev.DevConsole;
 
 public class SettingsMenuEntry extends JPanel {
 	JPanel rightPanelSub = new JPanel(), general = new JPanel(), tags = new JPanel(), advanced = new JPanel();
@@ -76,11 +83,7 @@ public class SettingsMenuEntry extends JPanel {
 	}
 
 	public JPanel getPanel() {
-		// move all of this stuff into a new class. Make the main ProjectSettingsFrame
-		// class not static, and create an instance of the frame for every project. All
-		// of the below will be moved into a new class which will be instantiated in the
-		// ProjectSettingsFrame class -- this shouldn't take too long, just don't want
-		// to do it rn
+		
 		general.setBackground(new Colors().getColor("BackGray"));
 		general.setLayout(new BorderLayout());
 
@@ -330,15 +333,16 @@ public class SettingsMenuEntry extends JPanel {
 		imagesMainPanel.setBorder(BorderFactory.createEtchedBorder());
 
 		JPanel lowerTagsPanel = new JPanel(), midTagsPanel = new JPanel(), topTagsPanel = new JPanel();
+		
 		JScrollPane tagsScroll = new JScrollPane(lowerTagsPanel);
-
-		tagsScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-		tagsScroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		tagsScroll.setBackground(new Colors().getColor("BackGray"));
 		tagsScroll.setBorder(BorderFactory.createEtchedBorder());
 		tagsScroll.setBackground(new Colors().getColor("BackGray"));
 		tagsScroll.setForeground(new Colors().getColor("BackGray"));
+		tagsScroll.setPreferredSize(new Dimension(200,190));
 		tagsScroll.getVerticalScrollBar().setUI(new BasicScrollBarUI());
+		tagsScroll.getVerticalScrollBar().setPreferredSize(new Dimension(10,0));
+		tagsScroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		tagsPanelMain.setLayout(new BorderLayout());
 		tagsPanelMain.add(tagsScroll, BorderLayout.SOUTH);
 		tagsPanelMain.add(topTagsPanel, BorderLayout.NORTH);
@@ -347,13 +351,13 @@ public class SettingsMenuEntry extends JPanel {
 		topTagsPanel.setPreferredSize(new Dimension(200, 25));
 		midTagsPanel.setBackground(new Colors().getColor("BackGray"));
 		midTagsPanel.setBorder(null);
-		lowerTagsPanel.setPreferredSize(new Dimension(200, 188));
+		
 		topTagsPanel.setBorder(null);
 		topTagsPanel.setBackground(new Colors().getColor("BackGray"));
 		lowerTagsPanel.setBackground(new Colors().getColor("BackGray"));
 
 		topTagsPanel.setLayout(new BorderLayout());
-
+		
 		JPanel topTagsSubpanelLeft = new JPanel(), topTagsSubpanelRight = new JPanel();
 		topTagsPanel.add(topTagsSubpanelLeft, BorderLayout.WEST);
 		topTagsPanel.add(topTagsSubpanelRight, BorderLayout.EAST);
@@ -372,22 +376,94 @@ public class SettingsMenuEntry extends JPanel {
 		lowerTagsPanel.setLayout(null);
 		
 
-		// for test only - though ints and system here could be used for final
-		int row = 0;
-		int num = 0;
-		for (int i = 0; i < 28; i++) {
-			TagMiniPanel tmp = new TagMiniPanel("Test" + i, new Color(new Random().nextInt(20) * 12,
-					new Random().nextInt(20) * 12, new Random().nextInt(20) * 12));
-			tmp.setLocation((num * 45) + 12 * (num + 1), row * 20 + 10 * (row + 1));
-			if (num < 2) {
-				num++;
-			} else {
-				num = 0;
-				row++;
+		final class GeneralTags {
+			protected void refreshTags(String[] tags) {
+				lowerTagsPanel.removeAll();
+				lowerTagsPanel.validate();
+				lowerTagsPanel.repaint();
+				
+				int row = 0;
+				int num = 0;
+				for (String tag: tags) {
+					TagMiniPanel tmp = new TagMiniPanel(tag.substring(0, Math.min(tag.length(), 5)), /*new Color(new Random().nextInt(20) * 12,
+							new Random().nextInt(20) * 12, new Random().nextInt(20) * 12)*/ new Color(200,20,220));
+					tmp.setLocation((num * 45) + 12 * (num + 1), row * 20 + 10 * (row + 1));
+					if (num < 2) {
+						num++;
+					} else {
+						num = 0;
+						row++;
+					}
+					lowerTagsPanel.setPreferredSize(new Dimension(200, (row*20+10*(row+1)) + 30));
+					lowerTagsPanel.add(tmp);
+					lowerTagsPanel.validate();
+					lowerTagsPanel.repaint();
+				}
 			}
-			lowerTagsPanel.setPreferredSize(new Dimension(200, lowerTagsPanel.getPreferredSize().height + 30));
-			lowerTagsPanel.add(tmp);
 		}
+		GeneralTags gt = new GeneralTags();
+		gt.refreshTags(p.getTags());
+		topTagsSubpanelRight.setLayout(new BorderLayout());
+		topTagsSubpanelRight.add(searchTagsField, BorderLayout.CENTER);
+		searchTagsField.setBorder(null);
+		searchTagsField.setBackground(new Colors().getColor("BackFieldDark"));
+		searchTagsField.setForeground(new Colors().getColor("BlueGreenTextMain"));
+		searchTagsField.setFont(Fonts.getFont("CreteRound-Regular", 13f));
+		
+		searchTagsField.addKeyListener(new KeyAdapter() {
+			public void keyReleased(KeyEvent arg0) {
+				ArrayList<String> searchNarrowList = new ArrayList<>();
+				for(String tag: p.getTags()) {
+					if(tag.contains(searchTagsField.getText())) {
+						searchNarrowList.add(tag);
+					}
+				}
+				String[] tagsSearched = new String[searchNarrowList.size()];
+				tagsSearched = searchNarrowList.toArray(tagsSearched);
+				gt.refreshTags(tagsSearched);
+			}
+		});
+		
+		topTagsSubpanelLeft.setLayout(new BorderLayout());
+		topTagsSubpanelLeft.add(addDelTagsPanel, BorderLayout.CENTER);
+		JButton addTagsButton = new JButton(), removeTagsButton = new JButton();
+		
+		addDelTagsPanel.setLayout(new BorderLayout());
+		addDelTagsPanel.add(removeTagsButton, BorderLayout.WEST);
+		addDelTagsPanel.add(addTagsButton, BorderLayout.CENTER);
+		removeTagsButton.setPreferredSize(new Dimension(15,0));
+		addTagsButton.setBorder(BorderFactory.createEtchedBorder());
+		addTagsButton.setBackground(new Colors().getColor("ButtonsMain"));
+		removeTagsButton.setBorder(BorderFactory.createEtchedBorder());
+		removeTagsButton.setBackground(new Colors().getColor("ButtonsMain"));
+		
+		addTagsButton.setText("+");
+		removeTagsButton.setText("-");
+		addTagsButton.setForeground(new Colors().getColor("InGreen"));
+		removeTagsButton.setForeground(new Colors().getColor("RED"));
+		addTagsButton.setFont(Fonts.getFont("CreteRound-Regular", 15f));
+		removeTagsButton.setFont(Fonts.getFont("CreteRound-Regular", 19f));
+		addTagsButton.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				PromptFrame pf = new PromptFrame();
+				pf.promptMultiInput("Create a Tag", "Enter a tag name to create a new tag", new String[] {"Tag Name"}, new int[] {0}, new ImageIcon("logo.png"), new INventoryCallable() {
+					
+					@Override
+					public void execute(String[] args) {
+						Projects.writeTagAdd(p, args[0]);
+						gt.refreshTags(p.getTags());
+						DevConsole.printOut("Tag created: " + args[0]);
+					}
+					
+					@Override
+					public void cancelFallback() {
+						DevConsole.printOut("Tag creation operation canceled.");
+					}
+				});
+			}
+		});
 
 		// ****//
 

@@ -338,5 +338,9 @@ public class Projects {
 	public static Project fromName(String name) {
 		return new Project(name, "", true, new String[] {});
 	}
+	public static void writeTagAdd(Project p, String tag) {
+		p.addTag(tag);
+		saveAll();
+	}
 
 }
