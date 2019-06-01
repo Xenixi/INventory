@@ -127,12 +127,15 @@ public class Projects {
 
 	}
 
-	public static void renProject(Project p, String newName) {
+	public static boolean renProject(Project p, String newName) {
+		if(exists(Projects.fromName(newName))) {
+			return false;
+		}
 		p.setName(newName);
 		saveAll();
 		p.getPanelUI().refresh();
 		updatePanelUI();
-
+		return true;
 	}
 	public static void setProjectDesc(Project p, String desc) {
 		p.setDesc(desc);
@@ -164,6 +167,13 @@ public class Projects {
 		for (Project p : localProjectList) {
 			if (p.getName().toLowerCase().contains(text.toLowerCase())) {
 				localProjectSearchList.add(p);
+			} 
+			if(text.contains("[tag] "))
+			for(String tag: p.getTags()) {
+				if(tag.toLowerCase().contains(text.replace("[tag] ", "").toLowerCase())) {
+					localProjectSearchList.add(p);
+					break;
+				}
 			}
 
 		}
@@ -340,6 +350,10 @@ public class Projects {
 	}
 	public static void writeTagAdd(Project p, String tag) {
 		p.addTag(tag);
+		saveAll();
+	}
+	public static void writeTagRemove(Project p, String tag) {
+		p.removeTag(tag);
 		saveAll();
 	}
 

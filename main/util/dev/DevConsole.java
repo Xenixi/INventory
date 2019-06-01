@@ -23,6 +23,7 @@ public class DevConsole extends JFrame{
 	static final JScrollPane scroll = new JScrollPane(devTextArea);
 	static DevConsoleBackend backend = new DevConsoleBackend();
 	public static void init() {
+		devConFrame.setAlwaysOnTop(true);
 		devTextArea.setText("");
 		devConFrame.setSize(450,600);
 		devConFrame.setTitle("Developer Console (CTRL+SHIFT+D)");

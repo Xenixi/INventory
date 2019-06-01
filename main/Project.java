@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import inventory.gui.comp.ProjectListElement;
+import inventory.main.util.dev.DevConsole;
 
 public class Project {
 
@@ -16,7 +17,7 @@ public class Project {
 	ProjectData data = new ProjectData();;
 	boolean selected;
 	ArrayList<String> nameHistory = new ArrayList<>();
-
+	ArrayList<String> tagsSelected = new ArrayList<>();
 	public Project(String name, String desc, boolean local, String[] tags) {
 
 		data.name = name;
@@ -139,6 +140,37 @@ public class Project {
 		String[] newTags = new String[tags.size()];
 		newTags = tags.toArray(newTags);
 		data.tags = newTags;
+	}
+	public void setTagSelected(String tag, boolean selected) {
+		if(selected) {
+		tagsSelected.add(tag.toLowerCase());
+		DevConsole.printOut("Added tag to selected list: '" + tag.toLowerCase() + "'");
+		}
+		else {
+			int i = 0;
+		for(String tagSelected: tagsSelected) {
+			if(tagSelected.equalsIgnoreCase(tag)) {
+				tagsSelected.remove(i);
+				
+				DevConsole.printOut("Removed tag from selected list: '" + tag.toLowerCase() + "'");
+				break;
+			}
+			i++;
+		}
+		}
+	}
+	public List<String> getSelectedTags() {
+		return tagsSelected;
+	}
+	public void removeTag(String tagName) {
+		ArrayList<String> tagsList = new ArrayList<>();
+		for(String tag: data.tags) {
+			if(!tag.equalsIgnoreCase(tagName))
+			tagsList.add(tag);
+		}
+		String[] tagsArrayNew = new String[tagsList.size()];
+		tagsArrayNew = tagsList.toArray(tagsArrayNew);
+		data.tags = tagsArrayNew;
 	}
 	
 	//override
