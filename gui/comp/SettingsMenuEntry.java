@@ -261,23 +261,27 @@ public class SettingsMenuEntry extends JPanel {
 											if (!projTitleField.getText().equalsIgnoreCase(p.getName()))
 												if (!Projects.renProject(p, projTitleField.getText())) {
 													projTitleField.setForeground(new Colors().getColor("RED"));
-													projTitleField.setToolTipText("A project with this title already exists!");
+													projTitleField.setToolTipText(
+															"A project with this title already exists!");
 												} else {
 													projTitleField
 															.setForeground(new Colors().getColor("BlueGreenTextMain"));
-													projTitleField.setToolTipText("Title cannot contain any of the following characters: /\\*:?><\"|");
+													projTitleField.setToolTipText(
+															"Title cannot contain any of the following characters: /\\*:?><\"|");
 												}
 											else {
 												projTitleField
 														.setForeground(new Colors().getColor("BlueGreenTextMain"));
-											projTitleField.setToolTipText("Title cannot contain any of the following characters: /\\*:?><\"|");
+												projTitleField.setToolTipText(
+														"Title cannot contain any of the following characters: /\\*:?><\"|");
 											}
 										} else {
 											if (Projects.renProject(p, "untitled#" + new Random().nextInt())) {
 												untitled = true;
 											} else {
 												projTitleField.setForeground(new Colors().getColor("RED"));
-												projTitleField.setToolTipText("A project with this title already exists!");
+												projTitleField
+														.setToolTipText("A project with this title already exists!");
 											}
 										}
 										lastChange = projTitleField.getText();
@@ -468,42 +472,48 @@ public class SettingsMenuEntry extends JPanel {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				PromptFrame pf = new PromptFrame();
-				pf.promptMultiInput("Create a Tag", "Enter a tag name to create a new tag", new String[] { "Tag Name" },
-						new int[] { 0 }, new ImageIcon("logo.png"), new INventoryCallable() {
+				pf.promptMultiInput("Create (a) Tag(s)", "Enter (a) tag name(s) to create (a) new tag(s) [,]",
+						new String[] { "Tag Name" }, new int[] { 0 }, new ImageIcon("logo.png"),
+						new INventoryCallable() {
 
 							@Override
 							public void execute(String[] args) {
-								boolean tagDuplicate = false;
-								for (String tag : p.getTags()) {
-									if (tag.equalsIgnoreCase(args[0])) {
-										tagDuplicate = true;
+								for (String tagArgOrig : args[0].split(",")) {
+									String tagArg = tagArgOrig.replace(" ", "");
+									if (!tagArg.equals("")) {
+										boolean tagDuplicate = false;
+										for (String tag : p.getTags()) {
+											if (tag.equalsIgnoreCase(tagArg)) {
+												tagDuplicate = true;
+											}
+										}
+										if (!tagDuplicate) {
+											Projects.writeTagAdd(p, tagArg);
+											gt.refreshTags(p.getTags());
+											Projects.updatePanelUI();
+											Projects.setSelected(p);
+											DevConsole.printOut("Tag created: " + tagArg);
+										} else {
+											DevConsole.printOut("Tag failed to create: Duplicate");
+											new PromptFrame().promptMultiInput("Failed to create tag - duplicate",
+													"The tag you wish to create: '"
+															+ tagArg.substring(0, Math.min(tagArg.length(), 3))
+															+ "...' already exists.",
+													new String[0], new int[0], new ImageIcon("logo.png"),
+													new INventoryCallable() {
+
+														@Override
+														public void execute(String[] args) {
+															DevConsole.printOut("User - exited error prompt");
+														}
+
+														@Override
+														public void cancelFallback() {
+															DevConsole.printOut("User - exited error prompt");
+														}
+													});
+										}
 									}
-								}
-								if (!tagDuplicate) {
-									Projects.writeTagAdd(p, args[0]);
-									gt.refreshTags(p.getTags());
-									Projects.updatePanelUI();
-									Projects.setSelected(p);
-									DevConsole.printOut("Tag created: " + args[0]);
-								} else {
-									DevConsole.printOut("Tag failed to create: Duplicate");
-									new PromptFrame().promptMultiInput("Failed to create tag - duplicate",
-											"The tag you wish to create: '"
-													+ args[0].substring(0, Math.min(args[0].length(), 3))
-													+ "...' already exists.",
-											new String[0], new int[0], new ImageIcon("logo.png"),
-											new INventoryCallable() {
-
-												@Override
-												public void execute(String[] args) {
-													DevConsole.printOut("User - exited error prompt");
-												}
-
-												@Override
-												public void cancelFallback() {
-													DevConsole.printOut("User - exited error prompt");
-												}
-											});
 								}
 							}
 
