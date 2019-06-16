@@ -220,7 +220,7 @@ public class Projects {
 		updatePanelUI();
 		return projectPanel;
 	}
-
+	//**********
 	public static void setSelected(Project p) {
 		for (Project project : localProjectList) {
 			if (project.isSelected()) {
@@ -249,6 +249,7 @@ public class Projects {
 			currentlySelected.add(p);
 		}
 	}
+	//**********
 
 	public static void delSelected() {
 		PromptFrame pf = new PromptFrame();

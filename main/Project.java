@@ -14,7 +14,7 @@ public class Project {
 
 	ProjectListElement ple;
 	File linkedData;
-	ProjectData data = new ProjectData();;
+	ProjectData data = new ProjectData();
 	boolean selected;
 	ArrayList<String> nameHistory = new ArrayList<>();
 	ArrayList<String> tagsSelected = new ArrayList<>();

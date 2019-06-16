@@ -19,6 +19,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
+import inventory.main.item.ItemManager;
 import inventory.main.util.dev.DevConsole;
 
 public class INventoryGUI extends JFrame {
@@ -30,7 +31,9 @@ public class INventoryGUI extends JFrame {
 	}
 	public void start() {
 		SwingUtilities.invokeLater(new Runnable() {
+			
 			public void run() {
+				ItemManager.init();
 				// All the stuffs ;) *_* -_- (: *-*
 
 				JFrame menuFrame = new JFrame();
@@ -57,7 +60,18 @@ public class INventoryGUI extends JFrame {
 				projectsContainerPanel.setBackground(new Colors().getColor("BackGray"));
 
 				searchPanel.setBackground(new Colors().getColor("BackGray"));
+				
+				
+				//*********************
+				
+				
 				searchResultsEditPanel.setBackground(new Colors().getColor("BackGray"));
+				searchResultsEditPanel.setLayout(new BorderLayout());
+				searchResultsEditPanel.add(ItemManager.getPanel(), BorderLayout.CENTER);	
+				
+				//*********************
+				
+				
 				///
 				menuFrame.setLocationRelativeTo(null);
 				menuFrame.setLocation(50, 50);
@@ -117,9 +131,8 @@ public class INventoryGUI extends JFrame {
 				splitViewPanel
 						.setBorder(BorderFactory.createMatteBorder(0, 3, 0, 0, new Colors().getColor("BorderLight")));
 
-				searchBarField.setForeground(new Colors().getColor("lighttext"));
-				searchBarField.setFont(Fonts.getFont("OpenSans-lightitalic", 26f));
-				searchBarField.setText("Search...");
+				searchBarField.setForeground(new Colors().getColor("InGreen"));
+				searchBarField.setFont(Fonts.getFont("CreteRound-Regular", 23f));
 
 				mainControlMenuPanel.setLayout(new BorderLayout());
 
