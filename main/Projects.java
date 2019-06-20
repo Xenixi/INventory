@@ -4,6 +4,7 @@ import java.awt.Dimension;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -12,6 +13,7 @@ import javax.swing.JScrollPane;
 
 import inventory.guitool.PromptFrame;
 import inventory.interfaces.INventoryCallable;
+import inventory.main.item.ItemManager;
 import inventory.main.util.dev.DevConsole;
 
 public class Projects {
@@ -128,7 +130,7 @@ public class Projects {
 	}
 
 	public static boolean renProject(Project p, String newName) {
-		if(exists(Projects.fromName(newName))) {
+		if (exists(Projects.fromName(newName))) {
 			return false;
 		}
 		p.setName(newName);
@@ -137,10 +139,12 @@ public class Projects {
 		updatePanelUI();
 		return true;
 	}
+
 	public static void setProjectDesc(Project p, String desc) {
 		p.setDesc(desc);
 		saveAll();
 	}
+
 	public static Project getProject(String name) {
 		Project toReturn = null;
 		for (Project p : localProjectList) {
@@ -167,14 +171,14 @@ public class Projects {
 		for (Project p : localProjectList) {
 			if (p.getName().toLowerCase().contains(text.toLowerCase())) {
 				localProjectSearchList.add(p);
-			} 
-			if(text.contains("[tag] "))
-			for(String tag: p.getTags()) {
-				if(tag.toLowerCase().contains(text.replace("[tag] ", "").toLowerCase())) {
-					localProjectSearchList.add(p);
-					break;
-				}
 			}
+			if (text.contains("[tag] "))
+				for (String tag : p.getTags()) {
+					if (tag.toLowerCase().contains(text.replace("[tag] ", "").toLowerCase())) {
+						localProjectSearchList.add(p);
+						break;
+					}
+				}
 
 		}
 		updatePanelUI();
@@ -220,7 +224,8 @@ public class Projects {
 		updatePanelUI();
 		return projectPanel;
 	}
-	//**********
+
+	// **********
 	public static void setSelected(Project p) {
 		for (Project project : localProjectList) {
 			if (project.isSelected()) {
@@ -232,7 +237,7 @@ public class Projects {
 			p.setSelected(true);
 			currentlySelected.add(p);
 		}
-
+		ItemManager.refresh();
 	}
 
 	public static void addSelected(Project p) {
@@ -248,8 +253,9 @@ public class Projects {
 			}
 			currentlySelected.add(p);
 		}
+		ItemManager.refresh();
 	}
-	//**********
+	// **********
 
 	public static void delSelected() {
 		PromptFrame pf = new PromptFrame();
@@ -311,7 +317,7 @@ public class Projects {
 
 					});
 		}
-
+		ItemManager.refresh();
 	}
 
 	public static void saveAll() {
@@ -346,16 +352,35 @@ public class Projects {
 
 		return false;
 	}
+
 	public static Project fromName(String name) {
 		return new Project(name, "", true, new String[] {});
 	}
+
 	public static void writeTagAdd(Project p, String tag) {
 		p.addTag(tag);
 		saveAll();
 	}
+
 	public static void writeTagRemove(Project p, String tag) {
 		p.removeTag(tag);
 		saveAll();
+	}
+
+	public static List<Project> getProjectList(int loc) {
+		if (loc == LOCAL) {
+			try {
+				updateInternal(LOCAL);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			return localProjectList;
+		}
+		return null;
+	}
+
+	public static List<Project> getSelected() {
+		return currentlySelected;
 	}
 
 }

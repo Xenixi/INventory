@@ -7,7 +7,7 @@ import inventory.main.item.ItemManager;
 
 public class ProjectData implements Serializable {
 	String name = "", desc = "";
-	ItemManager itemM = new ItemManager();
+	ItemManager itemM;
 	private static final long serialVersionUID = 1L;
 	boolean local;
 	String[] tags = new String[0];
@@ -17,7 +17,6 @@ public class ProjectData implements Serializable {
 		this.corrupt = corrupt;
 	}
 	public ProjectData() {
-		
 	}
 	public boolean isCorrupt() {
 		return corrupt;

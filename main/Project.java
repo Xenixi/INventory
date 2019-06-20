@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import inventory.gui.comp.ProjectListElement;
+import inventory.main.item.Item;
+import inventory.main.item.ItemManager;
 import inventory.main.util.dev.DevConsole;
 
 public class Project {
@@ -19,7 +21,7 @@ public class Project {
 	ArrayList<String> nameHistory = new ArrayList<>();
 	ArrayList<String> tagsSelected = new ArrayList<>();
 	public Project(String name, String desc, boolean local, String[] tags) {
-
+		
 		data.name = name;
 		data.desc = desc;
 		data.local = local;
@@ -36,6 +38,7 @@ public class Project {
 		ple = new ProjectListElement(this);
 		linkedData = new File("Projects/" + data.name + ".inprj");
 		nameHistory.add(data.name);
+		data.itemM = new ItemManager(this);
 	}
 
 	public Project(ProjectData data) {
@@ -43,6 +46,7 @@ public class Project {
 		ple = new ProjectListElement(this);
 		linkedData = new File("Projects/" + data.name + ".inprj");
 		nameHistory.add(data.name);
+		data.itemM = new ItemManager(this);
 	}
 
 	public String getName() {
@@ -173,6 +177,18 @@ public class Project {
 		data.tags = tagsArrayNew;
 	}
 	
+	public void createProjectItem(String name, String desc, String instructions) {
+		data.itemM.addItem(new Item(name, desc, instructions));
+	}
+	public void createProjectItem(String name, String desc) {
+		data.itemM.addItem(new Item(name, desc));
+	}
+	public void createProjectItem(String name) {
+		data.itemM.addItem(new Item(name));
+	}
+	public ItemManager getProjectItemManager() {
+		return data.itemM;
+	}
 	//override
 	public boolean equals(Object o) {
 		if(((Project)o).getName().equalsIgnoreCase(this.getName())) {
@@ -188,4 +204,5 @@ public class Project {
 		}
 		return "'" + data.name + "' -- Tags: " + sb;
 	}
+	
 }
