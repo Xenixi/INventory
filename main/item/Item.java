@@ -2,11 +2,17 @@ package inventory.main.item;
 
 import java.awt.Image;
 import java.awt.Point;
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import inventory.gui.comp.ItemListElement;
 
-public class Item {
+public class Item implements Serializable{
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private String itemName, itemDesc = "", itemInstructions = "";
 	private double itemCost = 0.00; // Cost to maintain item / to re-stock
 	private double itemPrice = 0.00; // price of item (if being marketed and sold)

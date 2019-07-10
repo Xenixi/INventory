@@ -15,10 +15,11 @@ import inventory.main.util.dev.DevConsole;
 
 public class ItemManager implements Serializable {
 	private static ArrayList<Double> managerIDs = new ArrayList<>();
-	private static Double ID = 0.0;
+	private Double ID = 0.0;
 	private static JPanel itemsPanel = new JPanel();
 	private static final long serialVersionUID = 1L;
 	private static ArrayList<Item> currentResults = new ArrayList<>();
+	String name;
 	// static stuff
 	protected static ArrayList<ItemManager> itemManagers = new ArrayList<>();
 	public static void addManager(ItemManager i) {
@@ -32,11 +33,7 @@ public class ItemManager implements Serializable {
 		itemsPanel.setBackground(new Colors().getColor("BackGray"));
 		itemsPanel.setLayout(null);
 		/// Get rid of this code:
-		for (Project p : Projects.getProjectList(Projects.LOCAL)) {
-			Random r = new Random();
-			p.createProjectItem("RandomItem - " + r.nextDouble());
-			
-		}
+		
 		///
 		refresh();
 
@@ -56,19 +53,23 @@ public class ItemManager implements Serializable {
 		} else {
 			System.err.println("selected");
 			for(Project p: Projects.getSelected()) {
-				for(Item i : p.getProjectItemManager().getItems()) {
+				System.out.println(p.getName() + " | " + p.ID);
+				//
+				for(Item i : p.getProjectItems()) {
+					
 					DevConsole.printOut("Item read: " + i.getName());
 					currentResults.add(i);
+					
 				}
 			}
 		}
 		updatePanel();
 	}
 	public static void updatePanel() {
-		//fix this problem -- must remove all items from panel and then re-add properly 
 		itemsPanel.removeAll();
 		int y = 5;
 		for (Item i : currentResults) {
+			System.err.println("Adding item");
 			itemsPanel.add(i.getItemListUI(new Point(5, y)));
 			y = y + 105;
 		}
@@ -81,6 +82,9 @@ public class ItemManager implements Serializable {
 	}
 
 	// instance stuff
+	
+	
+	
 	public ItemManager(Project p) {
 		/*The whole point of this is to make sure only one item manager is added for each project
 		 * projects are created many times (when loading from the file, creating a new one, saving - so duplicates are possible (That's why the console was going crazy every time
@@ -88,7 +92,7 @@ public class ItemManager implements Serializable {
 		 * This prevents that --- one per project (based on name)
 		 * yep - works
 		 */
-		String name = p.getName();
+		name = p.getName();
 		StringBuilder sb = new StringBuilder();
 		for(char c: name.toCharArray()) {
 			int i = c;
@@ -107,6 +111,8 @@ public class ItemManager implements Serializable {
 		}
 		
 	}
+	
+	//maybe ditch everything below here....
 	Item[] items = new Item[0];
 
 	private ArrayList<Item> getTempItemList() {

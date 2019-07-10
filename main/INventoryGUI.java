@@ -19,6 +19,8 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
+import inventory.guitool.PromptFrame;
+import inventory.interfaces.INventoryCallable;
 import inventory.main.item.ItemManager;
 import inventory.main.util.dev.DevConsole;
 
@@ -312,6 +314,37 @@ public class INventoryGUI extends JFrame {
 				searchBarField.setCaretColor(new Colors().getColor("InGreen"));
 				projectsContainerPanel.setLayout(new BorderLayout());
 				projectsContainerPanel.add(Projects.getProjectPanel(), BorderLayout.CENTER);
+				///
+				JButton newItemButton = new JButton("Item+");
+				splitViewPanel.setLayout(new BorderLayout());
+				splitViewPanel.add(newItemButton, BorderLayout.CENTER);
+				newItemButton.setFont(Fonts.getFont("CreteRound-Regular", 8f));
+				newItemButton.setBackground(new Colors().getColor("InGreen"));
+				newItemButton.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent arg0) {
+						DevConsole.printOut("New Item Button Pressed");
+						if(Projects.getSelected().size() > 1) {
+							DevConsole.printOut("Too many project selected for this operation");
+						} else if (Projects.getSelected().size() < 1) {
+							DevConsole.printOut("No proj selected");
+						} else {
+							DevConsole.printOut("Success");
+							new PromptFrame().promptMultiInput("Create new Item", "Enter a name and description for the item:", new String[] {"Name", "Description"}, new int[] {0,1}, new ImageIcon("logo.png"), new INventoryCallable() {
+								
+								@Override
+								public void execute(String[] args) {
+									Projects.getSelected().get(0).createProjectItem(args[0], args[1]);
+								}
+								
+								@Override
+								public void cancelFallback() {
+									DevConsole.printOut("An operation was canceled: Item Creation for project '" + Projects.getSelected().get(0) + "'");
+								}
+							});
+							
+						}
+					}
+				});
 				// Initialize Projects class
 				try {
 					Projects.init(Projects.LOCAL);

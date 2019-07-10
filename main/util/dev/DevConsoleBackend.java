@@ -2,6 +2,7 @@ package inventory.main.util.dev;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Random;
 
 import javax.print.attribute.standard.PDLOverrideSupported;
 
@@ -237,6 +238,18 @@ public class DevConsoleBackend {
 					i++;
 				}
 
+			}
+		});
+		cmdMap.put("project additemstest", new DevConsoleRun() {
+			
+			@Override
+			public void runCMD(String[] args) {
+				for (Project p : Projects.getProjectList(Projects.LOCAL)) {
+					System.out.println("Project: " + p.getName() + " | " + p.ID);
+					Random r = new Random();
+					p.createProjectItem("RandomItem - " + r.nextDouble());
+					
+				}
 			}
 		});
 	}
