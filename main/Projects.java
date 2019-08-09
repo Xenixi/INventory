@@ -116,8 +116,10 @@ public class Projects {
 				if (new Project(INPRJHandler.readData(f)).equals(p)) {
 					f.delete();
 					try {
+						
 						setSelected(null);
 						updateInternal(LOCAL);
+					
 						updatePanelUI();
 					} catch (Exception e) {
 						e.printStackTrace();

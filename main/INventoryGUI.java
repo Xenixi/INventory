@@ -8,6 +8,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
@@ -377,6 +378,25 @@ public class INventoryGUI extends JFrame {
 					}
 				});
 				
+				searchBarField.addKeyListener(new KeyListener() {
+					
+					@Override
+					public void keyTyped(KeyEvent e) {
+					}
+					
+					@Override
+					public void keyReleased(KeyEvent e) {
+						String text = searchBarField.getText();
+						ItemManager.searchMode(text);
+					}
+					
+					@Override
+					public void keyPressed(KeyEvent e) {
+						
+					}
+				});
+				
+				
 				KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(ActionManager.dispatcherMain);
 				
 				delButton.addActionListener(new ActionListener() {
@@ -388,6 +408,48 @@ public class INventoryGUI extends JFrame {
 					}
 				});
 				
+				delButton.addMouseListener(new MouseAdapter() {
+
+					@Override
+					public void mouseExited(MouseEvent e) {
+						delButton.setBackground(new Colors().getColor("ButtonsMain"));
+					}
+
+					@Override
+					public void mouseEntered(MouseEvent e) {
+						delButton.setBackground(new Colors().getColor("ButtonsMainLighter"));
+					}
+
+					
+				});
+				newButton.addMouseListener(new MouseAdapter() {
+
+					@Override
+					public void mouseExited(MouseEvent e) {
+						newButton.setBackground(new Colors().getColor("ButtonsMain"));
+					}
+
+					@Override
+					public void mouseEntered(MouseEvent e) {
+						newButton.setBackground(new Colors().getColor("ButtonsMainLighter"));
+					}
+
+					
+				});
+				colorButton.addMouseListener(new MouseAdapter() {
+
+					@Override
+					public void mouseExited(MouseEvent e) {
+						colorButton.setBackground(new Colors().getColor("ButtonsMain"));
+					}
+
+					@Override
+					public void mouseEntered(MouseEvent e) {
+						colorButton.setBackground(new Colors().getColor("ButtonsMainLighter"));
+					}
+
+					
+				});
 				
 			}
 		});

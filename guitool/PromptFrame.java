@@ -8,6 +8,8 @@ import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.LinkedHashMap;
 import java.util.Map.Entry;
 
@@ -121,6 +123,24 @@ public class PromptFrame extends JFrame {
 		cancelButton.setFont(Fonts.getFont("CreteRound-Regular", 14f));
 		cancelButton.setBorder(BorderFactory.createEtchedBorder());
 		cancelButton.setText("Cancel");
+		
+		okButton.addMouseListener(new MouseAdapter() {
+			public void mouseExited(MouseEvent arg0) {
+				okButton.setBackground(new Colors().getColor("ButtonBack"));
+			}
+			public void mouseEntered(MouseEvent arg0) {
+				okButton.setBackground(new Colors().getColor("ButtonBackLight"));
+			}
+		});
+		cancelButton.addMouseListener(new MouseAdapter() {
+			public void mouseEntered(MouseEvent arg0) {
+				cancelButton.setBackground(new Colors().getColor("ButtonBackLight"));
+			}
+			public void mouseExited(MouseEvent arg0) {
+				cancelButton.setBackground(new Colors().getColor("ButtonBack"));
+			}
+		});
+		
 
 		mainPanel.add(okButton);
 		mainPanel.add(cancelButton);

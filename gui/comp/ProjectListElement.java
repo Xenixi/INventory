@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
@@ -119,18 +120,20 @@ public class ProjectListElement extends JPanel {
 		});
 		renButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				new PromptFrame().promptMultiInput("Rename Project: '" + p.getName() + "'", "Please enter a new project name:", new String[] {"Name"}, new int[] {0}, new ImageIcon("logo.png"), new INventoryCallable() {
-					
-					@Override
-					public void execute(String[] args) {
-						Projects.renProject(p, args[0]);
-					}
-					
-					@Override
-					public void cancelFallback() {
-						
-					}
-				});
+				new PromptFrame().promptMultiInput("Rename Project: '" + p.getName() + "'",
+						"Please enter a new project name:", new String[] { "Name" }, new int[] { 0 },
+						new ImageIcon("logo.png"), new INventoryCallable() {
+
+							@Override
+							public void execute(String[] args) {
+								Projects.renProject(p, args[0]);
+							}
+
+							@Override
+							public void cancelFallback() {
+
+							}
+						});
 			}
 		});
 		settingsButton.addActionListener(new ActionListener() {
@@ -139,7 +142,7 @@ public class ProjectListElement extends JPanel {
 			}
 		});
 		nameLabel.addMouseListener(new MouseListener() {
-			
+
 			@Override
 			public void mouseReleased(MouseEvent e) {
 
@@ -169,15 +172,86 @@ public class ProjectListElement extends JPanel {
 
 			}
 		});
-		nameLabel.setToolTipText(p.getDesc().substring(0, p.getDesc().length() > 40 ? 40 : p.getDesc().length()) + (p.getDesc().length() > 40 ? "..." : ""));
-		
-		
+		nameLabel.setToolTipText(p.getDesc().substring(0, p.getDesc().length() > 40 ? 40 : p.getDesc().length())
+				+ (p.getDesc().length() > 40 ? "..." : ""));
 
+		nameLabel.addMouseListener(new MouseListener() {
+
+			@Override
+			public void mouseClicked(MouseEvent e) {
+
+			}
+
+			@Override
+			public void mousePressed(MouseEvent e) {
+
+			}
+
+			@Override
+			public void mouseReleased(MouseEvent e) {
+
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				nameLabel.setBackground(new Colors().getColor("ButtonsMainLighter"));
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				nameLabel.setBackground(
+						new Colors().getColor(project.isSelected() ? "ButtonsMainSelected" : "ButtonsMain"));
+
+			}
+
+		});
+		delButton.addMouseListener(new MouseAdapter() {
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				delButton.setBackground(new Colors().getColor("ButtonsMain"));
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				delButton.setBackground(new Colors().getColor("ButtonsMainLighter"));
+			}
+
+		
+		});
+		renButton.addMouseListener(new MouseAdapter() {
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				renButton.setBackground(new Colors().getColor("ButtonsMain"));
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				renButton.setBackground(new Colors().getColor("ButtonsMainLighter"));
+			}
+
+		
+		});
+		settingsButton.addMouseListener(new MouseAdapter() {
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				settingsButton.setBackground(new Colors().getColor("ButtonsMain"));
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				settingsButton.setBackground(new Colors().getColor("ButtonsMainLighter"));
+			}
+
+			
+		});
 	}
 
 	public void refresh() {
 		if (project.isSelected()) {
-			
+
 			nameLabel.setBackground(new Colors().getColor("ButtonsMainSelected"));
 		} else {
 			nameLabel.setBackground(new Colors().getColor("ButtonsMain"));

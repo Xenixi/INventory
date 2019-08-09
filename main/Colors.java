@@ -16,6 +16,7 @@ public class Colors {
 		values.put("Border", new Color(10, 10, 10));
 		values.put("FieldText", new Color(170, 255, 170));
 		values.put("ButtonBack", new Color(25, 25, 25));
+		values.put("ButtonBackLight", new Color(45,45,45));
 		values.put("BorderLight", new Color(2,2,2));
 		values.put("lighttext", new Color(245,245,245));
 		values.put("ButtonsMain", new Color(50,50,50));
@@ -24,6 +25,7 @@ public class Colors {
 		values.put("Settings", new Color(124, 77, 189));
 		values.put("ButtonsMainSelected", new Color(90,90,90));
 		values.put("BlueGreenTextMain", new Color(0,189,169));
+		values.put("ButtonsMainLighter", new Color(70,70,70));
 	}
 
 	public Color getColor(String name) {

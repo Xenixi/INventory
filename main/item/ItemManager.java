@@ -14,6 +14,7 @@ import inventory.main.Projects;
 import inventory.main.util.dev.DevConsole;
 
 public class ItemManager implements Serializable {
+	//probs can remove Serializable implementation
 	private static ArrayList<Double> managerIDs = new ArrayList<>();
 	private Double ID = 0.0;
 	private static JPanel itemsPanel = new JPanel();
@@ -28,7 +29,6 @@ public class ItemManager implements Serializable {
 	public static List<ItemManager> getItemManagers() {
 		return itemManagers;
 	}
-
 	public static void init() {
 		itemsPanel.setBackground(new Colors().getColor("BackGray"));
 		itemsPanel.setLayout(null);
@@ -44,8 +44,8 @@ public class ItemManager implements Serializable {
 		updatePanel();
 		if(Projects.getSelected().size() == 0) {
 			System.err.println("Nothing selected");
-		for (ItemManager im : itemManagers) {
-			for (Item i : im.getItems()) {
+		for (Project p : Projects.getProjectList(Projects.LOCAL)) {
+			for (Item i : p.getProjectItems()) {
 				DevConsole.printOut("Item read: " + i.getName());
 				currentResults.add(i);
 			}
@@ -71,7 +71,7 @@ public class ItemManager implements Serializable {
 		for (Item i : currentResults) {
 			System.err.println("Adding item");
 			itemsPanel.add(i.getItemListUI(new Point(5, y)));
-			y = y + 105;
+			y = y + 55;
 		}
 		itemsPanel.validate();
 		itemsPanel.repaint();
@@ -80,18 +80,47 @@ public class ItemManager implements Serializable {
 	public static JPanel getPanel() {
 		return itemsPanel;
 	}
+	
+	public static void searchMode(String text) {
+		currentResults.clear();
+		if(Projects.getSelected().size() < 1) {
+			for(Project p : Projects.getProjectList(Projects.LOCAL)) {
+				for(Item i : p.getProjectItems()) {
+					currentResults.add(i);
+				}
+			}
+		} else {
+		for(Project p : Projects.getSelected()) {
+			for(Item i: p.getProjectItems()) {
+				currentResults.add(i);
+			}
+		}
+		}
+		ArrayList<Item> searchResults = new ArrayList<Item>();
+		for(Item i: currentResults) {
+			if(i.getName().toLowerCase().contains(text.toLowerCase())) {
+				searchResults.add(i);
+			}
+		}
+		currentResults = searchResults;
+		for(Item i : currentResults) {
+		}
+		updatePanel();
+	}
 
 	// instance stuff
 	
-	
+	//to remove:
+	/*
 	
 	public ItemManager(Project p) {
-		/*The whole point of this is to make sure only one item manager is added for each project
+		*The whole point of this is to make sure only one item manager is added for each project
 		 * projects are created many times (when loading from the file, creating a new one, saving - so duplicates are possible (That's why the console was going crazy every time
 		 * I created a new project. 
 		 * This prevents that --- one per project (based on name)
 		 * yep - works
-		 */
+		 
+		
 		name = p.getName();
 		StringBuilder sb = new StringBuilder();
 		for(char c: name.toCharArray()) {
@@ -112,7 +141,7 @@ public class ItemManager implements Serializable {
 		
 	}
 	
-	//maybe ditch everything below here....
+	
 	Item[] items = new Item[0];
 
 	private ArrayList<Item> getTempItemList() {
@@ -151,5 +180,5 @@ public class ItemManager implements Serializable {
 	public Item[] getItems() {
 		return items;
 	}
-
+*/
 }
