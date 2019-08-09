@@ -325,7 +325,7 @@ public class INventoryGUI extends JFrame {
 					public void actionPerformed(ActionEvent arg0) {
 						DevConsole.printOut("New Item Button Pressed");
 						if(Projects.getSelected().size() > 1) {
-							DevConsole.printOut("Too many project selected for this operation");
+							DevConsole.printOut("Too many projects selected for this operation");
 						} else if (Projects.getSelected().size() < 1) {
 							DevConsole.printOut("No proj selected");
 						} else {

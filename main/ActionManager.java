@@ -17,6 +17,7 @@ import inventory.main.util.dev.DevConsole;
 
 public class ActionManager {
 	private static boolean enabled = false;
+	private static boolean isMouseButtonDown = false;
 	static KeyEventDispatcher dispatcherMain = new KeyEventDispatcher() {
 		TimeMonitor timer = new TimeMonitor();
 		boolean exitCall = false;
@@ -64,4 +65,11 @@ public class ActionManager {
 
 		}
 	};
+	
+	public static void setMouseButtonDown(boolean isDown) {
+		isMouseButtonDown = isDown;
+	}
+	public static boolean isMouseButtonDown() {
+		return isMouseButtonDown;
+	}
 }

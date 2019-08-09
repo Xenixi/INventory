@@ -19,6 +19,7 @@ import javax.swing.JTextField;
 import inventory.guitool.ProjectSettingsFrame;
 import inventory.guitool.PromptFrame;
 import inventory.interfaces.INventoryCallable;
+import inventory.main.ActionManager;
 import inventory.main.Colors;
 import inventory.main.Fonts;
 import inventory.main.Project;
@@ -142,18 +143,35 @@ public class ProjectListElement extends JPanel {
 			}
 		});
 		nameLabel.addMouseListener(new MouseListener() {
-
 			@Override
 			public void mouseReleased(MouseEvent e) {
-
+				ActionManager.setMouseButtonDown(false);
 			}
 
 			@Override
 			public void mousePressed(MouseEvent e) {
+				ActionManager.setMouseButtonDown(true);
+				if(e.getButton() == MouseEvent.BUTTON1) {
 				if (e.isControlDown()) {
 					Projects.addSelected(p);
+				} else if (e.isShiftDown()) {
+					//flood select disabled for now - broken - must be fixed
+					/*
+					Projects.setFloodSelectComplete(p);
+					Projects.addSelected(p);
+					*/
 				} else {
 					Projects.setSelected(p);
+					//Projects.setFloodSelectStart(p);
+				}
+				} else if(e.getButton() == MouseEvent.BUTTON3) {
+					Projects.setSelected(null);
+					try {
+						Projects.updateInternal(Projects.LOCAL);
+					} catch (Exception e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
 				}
 			}
 
@@ -164,7 +182,10 @@ public class ProjectListElement extends JPanel {
 
 			@Override
 			public void mouseEntered(MouseEvent e) {
-
+				if(ActionManager.isMouseButtonDown() && (!p.isSelected()) && e.isAltDown()) {
+					Projects.addSelected(p);
+					
+				}
 			}
 
 			@Override
@@ -194,7 +215,9 @@ public class ProjectListElement extends JPanel {
 
 			@Override
 			public void mouseEntered(MouseEvent e) {
-				nameLabel.setBackground(new Colors().getColor("ButtonsMainLighter"));
+				if (!p.isSelected()) {
+					nameLabel.setBackground(new Colors().getColor("ButtonsMainLighter"));
+				}
 			}
 
 			@Override
@@ -217,7 +240,6 @@ public class ProjectListElement extends JPanel {
 				delButton.setBackground(new Colors().getColor("ButtonsMainLighter"));
 			}
 
-		
 		});
 		renButton.addMouseListener(new MouseAdapter() {
 
@@ -231,7 +253,6 @@ public class ProjectListElement extends JPanel {
 				renButton.setBackground(new Colors().getColor("ButtonsMainLighter"));
 			}
 
-		
 		});
 		settingsButton.addMouseListener(new MouseAdapter() {
 
@@ -245,7 +266,6 @@ public class ProjectListElement extends JPanel {
 				settingsButton.setBackground(new Colors().getColor("ButtonsMainLighter"));
 			}
 
-			
 		});
 	}
 

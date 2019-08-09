@@ -4,6 +4,7 @@ import java.awt.Dimension;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.swing.BorderFactory;
@@ -19,9 +20,9 @@ import inventory.main.util.dev.DevConsole;
 public class Projects {
 	public static final int LOCAL = 0;
 	public static final int CLOUD = 1;
-	static ArrayList<Project> localProjectList = new ArrayList<>();
-	static ArrayList<Project> cloudProjectList = new ArrayList<>();
-	static ArrayList<Project> localProjectSearchList = new ArrayList<>();
+	static List<Project> localProjectList = new ArrayList<>();
+	static List<Project> cloudProjectList = new ArrayList<>();
+	static List<Project> localProjectSearchList = new ArrayList<>();
 	static JPanel projectPanelMain = new JPanel();
 	static JScrollPane projectPanel = new JScrollPane(projectPanelMain);
 	static File localProjectsFolder = new File("Projects");
@@ -29,6 +30,8 @@ public class Projects {
 	static boolean searching = false;
 	static String searchingText = null;
 	static ArrayList<Project> currentlySelected = new ArrayList<>();
+	private static boolean floodSelect = false;
+	static Project floodSelectStart, floodSelectEnd;
 
 	public static void init(int loc) throws Exception {
 		if (loc == LOCAL) {
@@ -68,7 +71,13 @@ public class Projects {
 			throw new Exception(
 					"Invalid constructor input for init() method. Must be either Projects.LOCAL or Projects.CLOUD");
 		}
-		updatePanelUI();
+		deepRefresh();
+	}
+	public static void deepRefresh() {
+		if(searching)
+			searchMode(searchingText);
+		else
+			searchMode("");
 	}
 
 	public static boolean exists(Project p) {
@@ -93,8 +102,8 @@ public class Projects {
 			localProjectList.add(newProj);
 			saveAll();
 
-			updatePanelUI();
-			searchMode("");
+			deepRefresh();
+			
 			return true;
 		} else {
 			for (Project p : cloudProjectList) {
@@ -104,7 +113,7 @@ public class Projects {
 				}
 			}
 			cloudProjectList.add(new Project(name, desc, local, tags));
-			updatePanelUI();
+			deepRefresh();
 			return true;
 		}
 	}
@@ -119,8 +128,8 @@ public class Projects {
 						
 						setSelected(null);
 						updateInternal(LOCAL);
-					
-						updatePanelUI();
+						
+						
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
@@ -138,7 +147,7 @@ public class Projects {
 		p.setName(newName);
 		saveAll();
 		p.getPanelUI().refresh();
-		updatePanelUI();
+		deepRefresh();
 		return true;
 	}
 
@@ -171,19 +180,24 @@ public class Projects {
 		}
 		localProjectSearchList.clear();
 		for (Project p : localProjectList) {
-			if (p.getName().toLowerCase().contains(text.toLowerCase())) {
-				localProjectSearchList.add(p);
-			}
-			if (text.contains("[tag] "))
+			if (text.startsWith("[tag] ")) {
 				for (String tag : p.getTags()) {
 					if (tag.toLowerCase().contains(text.replace("[tag] ", "").toLowerCase())) {
 						localProjectSearchList.add(p);
 						break;
 					}
 				}
+			}
+			
+			else if (p.getName().toLowerCase().contains(text.toLowerCase())) {
+				localProjectSearchList.add(p);
+			}
+			
 
 		}
+		Collections.sort(localProjectSearchList);
 		updatePanelUI();
+		
 
 	}
 
@@ -234,12 +248,15 @@ public class Projects {
 				project.setSelected(false);
 			}
 		}
+		cancelFloodSelect();
 		currentlySelected.clear();
 		if (!(p == null)) {
 			p.setSelected(true);
 			currentlySelected.add(p);
+			
 		}
 		ItemManager.refresh();
+		
 	}
 
 	public static void addSelected(Project p) {
@@ -256,6 +273,48 @@ public class Projects {
 			currentlySelected.add(p);
 		}
 		ItemManager.refresh();
+	}
+	//flood select is broken -- very much
+	public static void setFloodSelectStart(Project p) {
+		floodSelectStart = p;
+		floodSelect = true;
+	}
+	public static void setFloodSelectComplete(Project p) {
+		if(floodSelect) {
+			floodSelectEnd = p;
+			ArrayList<Project> toSelect = new ArrayList<>();
+			boolean selectingOn = false;
+			for(Project x : localProjectList) {
+				if(x.equals(floodSelectStart)) {
+					selectingOn = true;
+					toSelect.add(x);
+				} else if(selectingOn) {
+					if(x.equals(floodSelectEnd)) {
+						selectingOn = false;
+					} else {
+						toSelect.add(x);
+					}
+				} else {
+					break;
+				}
+			}
+			//Didn't do it all in one step to make it neater
+			for(Project x : toSelect) {
+				addSelected(x);
+				
+			}
+			cancelFloodSelect();
+			
+		}
+		else 
+			DevConsole.printOut("Flood Select Start Never Set!");
+	}
+	public static void cancelFloodSelect() {
+		floodSelect = false;
+		
+	}
+	public static boolean floodSelectTrue() {
+		return floodSelect;
 	}
 	// **********
 
@@ -384,5 +443,6 @@ public class Projects {
 	public static List<Project> getSelected() {
 		return currentlySelected;
 	}
+	
 
 }

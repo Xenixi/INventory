@@ -13,7 +13,7 @@ import inventory.main.item.Item;
 import inventory.main.item.ItemManager;
 import inventory.main.util.dev.DevConsole;
 
-public class Project {
+public class Project implements Comparable<Project> {
 	public int ID = new Random().nextInt();
 	ProjectListElement ple;
 	File linkedData;
@@ -247,6 +247,11 @@ public class Project {
 			sb.append(tag);
 		}
 		return "'" + data.name + "' -- Tags: " + sb;
+	}
+
+	@Override
+	public int compareTo(Project otherProj) {
+		return this.getName().toLowerCase().compareTo(otherProj.getName().toLowerCase());
 	}
 
 }
