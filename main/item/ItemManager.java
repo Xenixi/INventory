@@ -1,6 +1,8 @@
 package inventory.main.item;
 
 import java.awt.Point;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -8,6 +10,7 @@ import java.util.Random;
 
 import javax.swing.JPanel;
 
+import inventory.gui.comp.ItemListElement;
 import inventory.main.Colors;
 import inventory.main.Project;
 import inventory.main.Projects;
@@ -70,7 +73,22 @@ public class ItemManager implements Serializable {
 		int y = 5;
 		for (Item i : currentResults) {
 			System.err.println("Adding item");
-			itemsPanel.add(i.getItemListUI(new Point(5, y)));
+			ItemListElement i1 = i.getItemListUI(new Point(5, y));
+			i1.addMouseListener(new MouseAdapter() {
+
+				@Override
+				public void mouseExited(MouseEvent e) {
+					i1.setBackground(new Colors().getColor("ButtonsMain"));
+				}
+
+				@Override
+				public void mouseEntered(MouseEvent e) {
+					i1.setBackground(new Colors().getColor("InGreen"));
+				}
+
+			
+			});
+			itemsPanel.add(i1);
 			y = y + 55;
 		}
 		itemsPanel.validate();
@@ -108,77 +126,4 @@ public class ItemManager implements Serializable {
 		updatePanel();
 	}
 
-	// instance stuff
-	
-	//to remove:
-	/*
-	
-	public ItemManager(Project p) {
-		*The whole point of this is to make sure only one item manager is added for each project
-		 * projects are created many times (when loading from the file, creating a new one, saving - so duplicates are possible (That's why the console was going crazy every time
-		 * I created a new project. 
-		 * This prevents that --- one per project (based on name)
-		 * yep - works
-		 
-		
-		name = p.getName();
-		StringBuilder sb = new StringBuilder();
-		for(char c: name.toCharArray()) {
-			int i = c;
-			sb.append(i);
-		}
-		ID = 0.000001 * (Double.parseDouble(sb.toString()));
-		boolean contains = false;
-		for(double d: managerIDs) {
-			if(d == ID) {
-				contains = true;
-			}
-		}
-		if(!contains) {
-			managerIDs.add(ID);
-			itemManagers.add(this);
-		}
-		
-	}
-	
-	
-	Item[] items = new Item[0];
-
-	private ArrayList<Item> getTempItemList() {
-		ArrayList<Item> temp = new ArrayList<Item>();
-		for (Item i : items) {
-			temp.add(i);
-		}
-		return temp;
-	}
-
-	private void setToArray(List<Item> temp) {
-		items = new Item[temp.size()];
-		items = temp.toArray(items);
-	}
-
-	public void addItem(Item i) {
-		List<Item> temp = getTempItemList();
-		temp.add(i);
-		setToArray(temp);
-	}
-
-	public void removeItem(Item i) {
-		List<Item> temp = getTempItemList();
-		for (Item item : temp) {
-			int a = 0;
-			if (item.equals(i)) {
-
-				temp.remove(a);
-				setToArray(temp);
-				break;
-			}
-			a++;
-		}
-	}
-
-	public Item[] getItems() {
-		return items;
-	}
-*/
 }

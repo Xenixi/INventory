@@ -1,5 +1,7 @@
 package inventory.main.item;
 
+import java.util.Vector;
+
 public class PItem extends Item{
 	public PItem(String name, String desc, double itemCost, double itemPrice) {
 		super(name, desc, itemCost, itemPrice);

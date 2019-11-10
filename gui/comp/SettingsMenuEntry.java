@@ -10,6 +10,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.lang.invoke.VolatileCallSite;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -306,9 +307,38 @@ public class SettingsMenuEntry extends JPanel {
 			}
 
 		});
+
 		descTextArea.addKeyListener(new KeyAdapter() {
+			volatile TimeMonitor descActivityMonitor = new TimeMonitor();
+			boolean first = true;
+			boolean active = true;
+
 			public void keyReleased(KeyEvent arg0) {
-				Projects.setProjectDesc(p, descTextArea.getText());
+				active = true;
+				descTextArea.setForeground(new Colors().getColor("RenBlue"));
+
+				descActivityMonitor.startTime();
+
+				Thread autoSaveDesc = new Thread(new Runnable() {
+					public void run() {
+						while (true) {
+							if (descActivityMonitor.getElapsedTimeMs() > 1000 && active) {
+
+								Projects.setProjectDesc(p, descTextArea.getText());
+								DevConsole.printOut("Project Settings - Project Desc. Saved");
+								descTextArea.setForeground(new Colors().getColor("BlueGreenTextMain"));
+								active = false;
+
+							}
+						}
+
+					}
+
+				});
+				if (first) {
+					autoSaveDesc.start();
+					first = false;
+				}
 			}
 		});
 

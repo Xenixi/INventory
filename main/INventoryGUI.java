@@ -29,12 +29,14 @@ public class INventoryGUI extends JFrame {
 	public INventoryGUI() {
 		start();
 	}
+
 	public void setSearchText(int search, String txt) {
-		
+
 	}
+
 	public void start() {
 		SwingUtilities.invokeLater(new Runnable() {
-			
+
 			public void run() {
 				ItemManager.init();
 				// All the stuffs ;) *_* -_- (: *-*
@@ -63,18 +65,15 @@ public class INventoryGUI extends JFrame {
 				projectsContainerPanel.setBackground(new Colors().getColor("BackGray"));
 
 				searchPanel.setBackground(new Colors().getColor("BackGray"));
-				
-				
-				//*********************
-				
-				
+
+				// *********************
+
 				searchResultsEditPanel.setBackground(new Colors().getColor("BackGray"));
 				searchResultsEditPanel.setLayout(new BorderLayout());
-				searchResultsEditPanel.add(ItemManager.getPanel(), BorderLayout.CENTER);	
-				
-				//*********************
-				
-				
+				searchResultsEditPanel.add(ItemManager.getPanel(), BorderLayout.CENTER);
+
+				// *********************
+
 				///
 				menuFrame.setLocationRelativeTo(null);
 				menuFrame.setLocation(50, 50);
@@ -324,25 +323,36 @@ public class INventoryGUI extends JFrame {
 				newItemButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent arg0) {
 						DevConsole.printOut("New Item Button Pressed");
-						if(Projects.getSelected().size() > 1) {
+						if (Projects.getSelected().size() > 1) {
 							DevConsole.printOut("Too many projects selected for this operation");
 						} else if (Projects.getSelected().size() < 1) {
 							DevConsole.printOut("No proj selected");
 						} else {
 							DevConsole.printOut("Success");
-							new PromptFrame().promptMultiInput("Create new Item", "Enter a name and description for the item:", new String[] {"Name", "Description"}, new int[] {0,1}, new ImageIcon("logo.png"), new INventoryCallable() {
-								
-								@Override
-								public void execute(String[] args) {
-									Projects.getSelected().get(0).createProjectItem(args[0], args[1]);
-								}
-								
-								@Override
-								public void cancelFallback() {
-									DevConsole.printOut("An operation was canceled: Item Creation for project '" + Projects.getSelected().get(0) + "'");
-								}
-							});
-							
+							new PromptFrame().promptMultiInput("Create new Item",
+									"Enter a name and description for the item:",
+									new String[] { "Name", "Description" }, new int[] { 0, 1 },
+									new ImageIcon("logo.png"), new INventoryCallable() {
+
+										@Override
+										public void execute(String[] args) {
+											Projects.getSelected().get(0).createProjectItem(args[0], args[1]);
+										}
+
+										@Override
+										public void cancelFallback() {
+											try {
+												DevConsole.printOut(
+														"An operation was canceled: Item Creation for project '"
+																+ Projects.getSelected().get(0) + "'");
+											} catch (Exception f) {
+												System.err.println(
+														"Error While printing to DevConsole. You can probably ignore this");
+												DevConsole.printOut("!Error Occurred - You can probably ignore this.");
+											}
+										}
+									});
+
 						}
 					}
 				});
@@ -356,58 +366,56 @@ public class INventoryGUI extends JFrame {
 				////
 
 				newButton.addActionListener(ActionManager.NEW_PROJECT);
-				
+
 				searchProjectsField.addKeyListener(new KeyListener() {
-					
+
 					@Override
 					public void keyTyped(KeyEvent e) {
-						
-					
+
 					}
-					
+
 					@Override
 					public void keyReleased(KeyEvent e) {
 						String text = searchProjectsField.getText();
 						Projects.searchMode(text);
-						
+
 					}
-					
+
 					@Override
 					public void keyPressed(KeyEvent e) {
-						
+
 					}
 				});
-				
+
 				searchBarField.addKeyListener(new KeyListener() {
-					
+
 					@Override
 					public void keyTyped(KeyEvent e) {
 					}
-					
+
 					@Override
 					public void keyReleased(KeyEvent e) {
 						String text = searchBarField.getText();
 						ItemManager.searchMode(text);
 					}
-					
+
 					@Override
 					public void keyPressed(KeyEvent e) {
-						
+
 					}
 				});
-				
-				
-				KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(ActionManager.dispatcherMain);
-				
+
+				KeyboardFocusManager.getCurrentKeyboardFocusManager()
+						.addKeyEventDispatcher(ActionManager.dispatcherMain);
+
 				delButton.addActionListener(new ActionListener() {
-					
-					
+
 					public void actionPerformed(ActionEvent arg0) {
 						Projects.delSelected();
-						
+
 					}
 				});
-				
+
 				delButton.addMouseListener(new MouseAdapter() {
 
 					@Override
@@ -420,7 +428,6 @@ public class INventoryGUI extends JFrame {
 						delButton.setBackground(new Colors().getColor("ButtonsMainLighter"));
 					}
 
-					
 				});
 				newButton.addMouseListener(new MouseAdapter() {
 
@@ -434,7 +441,6 @@ public class INventoryGUI extends JFrame {
 						newButton.setBackground(new Colors().getColor("ButtonsMainLighter"));
 					}
 
-					
 				});
 				colorButton.addMouseListener(new MouseAdapter() {
 
@@ -448,9 +454,8 @@ public class INventoryGUI extends JFrame {
 						colorButton.setBackground(new Colors().getColor("ButtonsMainLighter"));
 					}
 
-					
 				});
-				
+
 			}
 		});
 	}
